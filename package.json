@@ -1,0 +1,8 @@
+{
+  "name": "mws-restaurant",
+  "version": "0.1.0",
+  "main": "index.js",
+  "repository": "git@github.com:sergdenisov/mws-restaurant-stage-1.git",
+  "author": "sergdenisov",
+  "license": "MIT"
+}
