@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<% const {
+  title, bodyClass, withBreadcrumbs, withFilters, withRestaurantContainers, apiKey
+} = htmlWebpackPlugin.options; %>
+<% const { css, js } = htmlWebpackPlugin.files; %>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="<%= css %>">
+    <script defer src="<%= js %>" type="module"></script>
+    <script defer
+            src="<%= `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap` %>">
+    </script>
+  </head>
+  <body class="<%= bodyClass ? bodyClass : '' %>">
+    <header>
+      <nav>
+        <h1>
+          <a href="/">Restaurant Reviews</a>
+        </h1>
+      </nav>
+      <% if (withBreadcrumbs) { %>
+        <ul id="breadcrumb">
+          <li>
+            <a href="/">Home</a>
+          </li>
+        </ul>
+      <% } %>
+    </header>
+
+    <main id="maincontent">
+      <section id="map-container">
+        <div id="map"></div>
+      </section>
+      <% if (withFilters) { %>
+        <section>
+          <div class="filter-options">
+            <h2>Filter Results</h2>
+            <select id="neighborhoods-select" name="neighborhoods">
+              <option value="all">All Neighborhoods</option>
+            </select>
+            <select id="cuisines-select" name="cuisines">
+              <option value="all">All Cuisines</option>
+            </select>
+          </div>
+          <ul id="restaurants-list"></ul>
+        </section>
+      <% } %>
+      <% if (withRestaurantContainers) { %>
+        <section id="restaurant-container">
+          <h1 id="restaurant-name"></h1>
+          <img src="" id="restaurant-img" alt="Restaurant image">
+          <p id="restaurant-cuisine"></p>
+          <p id="restaurant-address"></p>
+          <table id="restaurant-hours"></table>
+        </section>
+        <section id="reviews-container">
+          <ul id="reviews-list"></ul>
+        </section>
+      <% } %>
+    </main>
+
+    <footer id="footer">
+      Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+    </footer>
+  </body>
+</html>

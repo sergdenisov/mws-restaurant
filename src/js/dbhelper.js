@@ -1,36 +1,16 @@
+const images = require.context('../images', false, /\.jpg$/);
+
 /**
  * Common database helper functions.
  */
-class DBHelper {
-  /**
-   * Database URL.
-   * Change this to restaurants.json file location on your server.
-   */
-  static get DATABASE_URL() {
-    const port = 8000; // Change this to your server port
-    return `http://localhost:${port}/data/restaurants.json`;
-  }
-
+export default class DBHelper {
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      // Oops!. Got an error from server.
-      if (xhr.status !== 200) {
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
-        return;
-      }
-
-      // Got a success response from server!
-      const json = JSON.parse(xhr.responseText);
-      const restaurants = json.restaurants;
-      callback(null, restaurants);
-    };
-    xhr.send();
+    import('../data/restaurants.json').then(json => {
+      callback(null, json.restaurants);
+    });
   }
 
   /**
@@ -44,7 +24,7 @@ class DBHelper {
         return;
       }
 
-      const restaurant = restaurants.find(r => r.id === id);
+      const restaurant = restaurants.find(r => String(r.id) === id);
       if (restaurant) { // Got the restaurant
         callback(null, restaurant);
       } else { // Restaurant does not exist in the database
@@ -158,7 +138,7 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+    return images(`./${restaurant.photograph}`);
   }
 
   /**
