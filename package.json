@@ -6,9 +6,20 @@
   "author": "sergdenisov",
   "license": "MIT",
   "scripts": {
+    "precommit": "lint-staged",
     "build": "webpack",
     "watch": "webpack --watch",
     "start": "webpack-dev-server --open"
+  },
+  "lint-staged": {
+    "*.js": [
+      "./node_modules/eslint/bin/eslint.js --fix",
+      "git add"
+    ],
+    "src/css/*.css": [
+      "./node_modules/stylelint/bin/stylelint.js --fix",
+      "git add"
+    ]
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",
@@ -21,6 +32,8 @@
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.0.5",
     "prettier": "1.12.1",
     "style-loader": "^0.21.0",
     "stylelint": "^9.2.0",
