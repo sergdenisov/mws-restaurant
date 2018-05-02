@@ -1,22 +1,23 @@
-import DBHelper from '../js/dbhelper';
-import '../css/all.css';
+import DBHelper from "../js/dbhelper";
+import "../css/all.css";
 
-const current = {restaurant: null};
+const current = { restaurant: null };
 
 /**
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
   fetchRestaurantFromURL((error, restaurant) => {
-    if (error) { // Got an error!
+    if (error) {
+      // Got an error!
       console.error(error);
       return;
     }
 
-    const map = new window.google.maps.Map(document.getElementById('map'), {
+    const map = new window.google.maps.Map(document.getElementById("map"), {
       zoom: 16,
       center: restaurant.latlng,
-      scrollwheel: false,
+      scrollwheel: false
     });
     fillBreadcrumb();
     DBHelper.mapMarkerForRestaurant(current.restaurant, map);
@@ -28,14 +29,16 @@ window.initMap = () => {
  * @param {callback} callback Callback function for restaurants fetch.
  */
 function fetchRestaurantFromURL(callback) {
-  if (current.restaurant) { // restaurant already fetched!
+  if (current.restaurant) {
+    // restaurant already fetched!
     callback(null, current.restaurant);
     return;
   }
 
-  const id = getParameterByName('id');
-  if (!id) { // no id found in URL
-    callback('No restaurant id in URL', null);
+  const id = getParameterByName("id");
+  if (!id) {
+    // no id found in URL
+    callback("No restaurant id in URL", null);
     return;
   }
 
@@ -56,8 +59,8 @@ function fetchRestaurantFromURL(callback) {
  * @param {Object} restaurant Restaurant details.
  */
 function fillBreadcrumb(restaurant = current.restaurant) {
-  const breadcrumb = document.getElementById('breadcrumb');
-  const li = document.createElement('li');
+  const breadcrumb = document.getElementById("breadcrumb");
+  const li = document.createElement("li");
   li.innerHTML = restaurant.name;
   breadcrumb.appendChild(li);
 }
@@ -77,7 +80,7 @@ function getParameterByName(name, url = window.location.href) {
   }
 
   if (!results[2]) {
-    return '';
+    return "";
   }
 
   return decodeURIComponent(results[2]);
@@ -88,17 +91,17 @@ function getParameterByName(name, url = window.location.href) {
  * @param {Object} restaurant Restaurant details.
  */
 function fillRestaurantHTML(restaurant = current.restaurant) {
-  const name = document.getElementById('restaurant-name');
+  const name = document.getElementById("restaurant-name");
   name.innerHTML = restaurant.name;
 
-  const address = document.getElementById('restaurant-address');
+  const address = document.getElementById("restaurant-address");
   address.innerHTML = restaurant.address;
 
-  const image = document.getElementById('restaurant-img');
-  image.className = 'restaurant-img';
+  const image = document.getElementById("restaurant-img");
+  image.className = "restaurant-img";
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
 
-  const cuisine = document.getElementById('restaurant-cuisine');
+  const cuisine = document.getElementById("restaurant-cuisine");
   cuisine.innerHTML = restaurant.cuisine_type;
 
   // fill operating hours
@@ -117,16 +120,16 @@ function fillRestaurantHTML(restaurant = current.restaurant) {
 function fillRestaurantHoursHTML(
   operatingHours = current.restaurant.operating_hours
 ) {
-  const hours = document.getElementById('restaurant-hours');
+  const hours = document.getElementById("restaurant-hours");
 
   for (const [operatingDay, operatingHour] of Object.entries(operatingHours)) {
-    const row = document.createElement('tr');
+    const row = document.createElement("tr");
 
-    const day = document.createElement('td');
+    const day = document.createElement("td");
     day.innerHTML = operatingDay;
     row.appendChild(day);
 
-    const time = document.createElement('td');
+    const time = document.createElement("td");
     time.innerHTML = operatingHour;
     row.appendChild(time);
 
@@ -139,20 +142,20 @@ function fillRestaurantHoursHTML(
  * @param {Object} reviews Restaurant reviews.
  */
 function fillReviewsHTML(reviews = current.restaurant.reviews) {
-  const container = document.getElementById('reviews-container');
-  const title = document.createElement('h2');
-  title.innerHTML = 'Reviews';
+  const container = document.getElementById("reviews-container");
+  const title = document.createElement("h2");
+  title.innerHTML = "Reviews";
   container.appendChild(title);
 
   if (!reviews) {
-    const noReviews = document.createElement('p');
-    noReviews.innerHTML = 'No reviews yet!';
+    const noReviews = document.createElement("p");
+    noReviews.innerHTML = "No reviews yet!";
     container.appendChild(noReviews);
     return;
   }
 
-  const ul = document.getElementById('reviews-list');
-  reviews.forEach((review) => {
+  const ul = document.getElementById("reviews-list");
+  reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
   });
   container.appendChild(ul);
@@ -164,20 +167,20 @@ function fillReviewsHTML(reviews = current.restaurant.reviews) {
  * @return {Object} Restaurant review HTML element.
  */
 function createReviewHTML(review) {
-  const li = document.createElement('li');
-  const name = document.createElement('p');
+  const li = document.createElement("li");
+  const name = document.createElement("p");
   name.innerHTML = review.name;
   li.appendChild(name);
 
-  const date = document.createElement('p');
+  const date = document.createElement("p");
   date.innerHTML = review.date;
   li.appendChild(date);
 
-  const rating = document.createElement('p');
+  const rating = document.createElement("p");
   rating.innerHTML = `Rating: ${review.rating}`;
   li.appendChild(rating);
 
-  const comments = document.createElement('p');
+  const comments = document.createElement("p");
   comments.innerHTML = review.comments;
   li.appendChild(comments);
 

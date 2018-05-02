@@ -1,4 +1,4 @@
-const images = require.context('../images', false, /\.jpg$/);
+const images = require.context("../images", false, /\.jpg$/);
 
 /**
  * Common database helper functions.
@@ -16,11 +16,13 @@ export default class DBHelper {
    * @param {callback} callback Callback function for restaurants fetch.
    */
   static fetchRestaurants(callback) {
-    import('../data/restaurants.json').then((json) => {
-      callback(null, json.restaurants);
-    }).catch((error) => {
-      callback(error, null);
-    });
+    import("../data/restaurants.json")
+      .then(json => {
+        callback(null, json.restaurants);
+      })
+      .catch(error => {
+        callback(error, null);
+      });
   }
 
   /**
@@ -36,11 +38,13 @@ export default class DBHelper {
         return;
       }
 
-      const restaurant = restaurants.find((r) => String(r.id) === id);
-      if (restaurant) { // Got the restaurant
+      const restaurant = restaurants.find(r => String(r.id) === id);
+      if (restaurant) {
+        // Got the restaurant
         callback(null, restaurant);
-      } else { // Restaurant does not exist in the database
-        callback('Restaurant does not exist', null);
+      } else {
+        // Restaurant does not exist in the database
+        callback("Restaurant does not exist", null);
       }
     });
   }
@@ -53,7 +57,9 @@ export default class DBHelper {
    * @param {callback} callback Callback function for restaurants fetch.
    */
   static fetchRestaurantByCuisineAndNeighborhood(
-    cuisine, neighborhood, callback
+    cuisine,
+    neighborhood,
+    callback
   ) {
     // Fetch all restaurants
     DBHelper.fetchRestaurants((error, restaurants) => {
@@ -63,11 +69,13 @@ export default class DBHelper {
       }
 
       let results = restaurants;
-      if (cuisine !== 'all') { // filter by cuisine
-        results = results.filter((r) => r.cuisine_type === cuisine);
+      if (cuisine !== "all") {
+        // filter by cuisine
+        results = results.filter(r => r.cuisine_type === cuisine);
       }
-      if (neighborhood !== 'all') { // filter by neighborhood
-        results = results.filter((r) => r.neighborhood === neighborhood);
+      if (neighborhood !== "all") {
+        // filter by neighborhood
+        results = results.filter(r => r.neighborhood === neighborhood);
       }
       callback(null, results);
     });
@@ -145,12 +153,11 @@ export default class DBHelper {
    */
   static mapMarkerForRestaurant(restaurant, map) {
     return new window.google.maps.Marker({
-        position: restaurant.latlng,
-        title: restaurant.name,
-        url: DBHelper.urlForRestaurant(restaurant),
-        map: map,
-        animation: window.google.maps.Animation.DROP,
-      }
-    );
+      position: restaurant.latlng,
+      title: restaurant.name,
+      url: DBHelper.urlForRestaurant(restaurant),
+      map: map,
+      animation: window.google.maps.Animation.DROP
+    });
   }
 }
