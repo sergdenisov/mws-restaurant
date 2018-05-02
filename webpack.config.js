@@ -9,11 +9,11 @@ module.exports = {
   mode: 'development',
   entry: {
     index: './src/js/index.js',
-    restaurant: './src/js/restaurant.js'
+    restaurant: './src/js/restaurant.js',
   },
   output: {
     filename: 'js/[name].js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'dist'),
   },
   module: {
     rules: [
@@ -21,19 +21,19 @@ module.exports = {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
-          use: 'css-loader'
-        })
+          use: 'css-loader',
+        }),
       },
       {
         test: /\.jpg$/,
         use: [{
           loader: 'file-loader',
           options: {
-            name: 'images/[name].[ext]'
-          }
-        }]
-      }
-    ]
+            name: 'images/[name].[ext]',
+          },
+        }],
+      },
+    ],
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),
@@ -44,7 +44,7 @@ module.exports = {
       inject: false,
       chunks: ['index'],
       apiKey: API_KEY,
-      withFilters: true
+      withFilters: true,
     }),
     new HtmlWebpackPlugin({
       title: 'Restaurant Info',
@@ -55,11 +55,11 @@ module.exports = {
       apiKey: API_KEY,
       bodyClass: 'inside',
       withBreadcrumbs: true,
-      withRestaurantContainers: true
-    })
+      withRestaurantContainers: true,
+    }),
   ],
   devtool: 'inline-source-map',
   devServer: {
-    contentBase: './dist'
+    contentBase: './dist',
   },
 };

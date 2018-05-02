@@ -1,7 +1,7 @@
 import DBHelper from '../js/dbhelper';
 import '../css/styles.css';
 
-const current = { restaurant: null };
+const current = {restaurant: null};
 
 /**
  * Initialize Google map, called from HTML.
@@ -13,10 +13,10 @@ window.initMap = () => {
       return;
     }
 
-    const map = new google.maps.Map(document.getElementById('map'), {
+    const map = new window.google.maps.Map(document.getElementById('map'), {
       zoom: 16,
       center: restaurant.latlng,
-      scrollwheel: false
+      scrollwheel: false,
     });
     fillBreadcrumb();
     DBHelper.mapMarkerForRestaurant(current.restaurant, map);
@@ -25,6 +25,7 @@ window.initMap = () => {
 
 /**
  * Get current restaurant from page URL.
+ * @param {callback} callback Callback function for restaurants fetch.
  */
 function fetchRestaurantFromURL(callback) {
   if (current.restaurant) { // restaurant already fetched!
@@ -46,12 +47,13 @@ function fetchRestaurantFromURL(callback) {
     }
 
     fillRestaurantHTML();
-    callback(null, restaurant)
+    callback(null, restaurant);
   });
 }
 
 /**
- * Add restaurant name to the breadcrumb navigation menu
+ * Add restaurant name to the breadcrumb navigation menu.
+ * @param {Object} restaurant Restaurant details.
  */
 function fillBreadcrumb(restaurant = current.restaurant) {
   const breadcrumb = document.getElementById('breadcrumb');
@@ -62,6 +64,9 @@ function fillBreadcrumb(restaurant = current.restaurant) {
 
 /**
  * Get a parameter by name from page URL.
+ * @param {string} name Parameter name.
+ * @param {string} url Url with parameters.
+ * @return {string} Parameter value;
  */
 function getParameterByName(name, url = window.location.href) {
   const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
@@ -79,7 +84,8 @@ function getParameterByName(name, url = window.location.href) {
 }
 
 /**
- * Create restaurant HTML and add it to the webpage
+ * Create restaurant HTML and add it to the web page.
+ * @param {Object} restaurant Restaurant details.
  */
 function fillRestaurantHTML(restaurant = current.restaurant) {
   const name = document.getElementById('restaurant-name');
@@ -105,9 +111,12 @@ function fillRestaurantHTML(restaurant = current.restaurant) {
 }
 
 /**
- * Create restaurant operating hours HTML table and add it to the webpage.
+ * Create restaurant operating hours HTML table and add it to the web page.
+ * @param {Object} operatingHours Restaurant operating hours.
  */
-function fillRestaurantHoursHTML(operatingHours = current.restaurant.operating_hours) {
+function fillRestaurantHoursHTML(
+  operatingHours = current.restaurant.operating_hours
+) {
   const hours = document.getElementById('restaurant-hours');
 
   for (const [operatingDay, operatingHour] of Object.entries(operatingHours)) {
@@ -126,7 +135,8 @@ function fillRestaurantHoursHTML(operatingHours = current.restaurant.operating_h
 }
 
 /**
- * Create all reviews HTML and add them to the webpage.
+ * Create all reviews HTML and add them to the web page.
+ * @param {Object} reviews Restaurant reviews.
  */
 function fillReviewsHTML(reviews = current.restaurant.reviews) {
   const container = document.getElementById('reviews-container');
@@ -142,14 +152,16 @@ function fillReviewsHTML(reviews = current.restaurant.reviews) {
   }
 
   const ul = document.getElementById('reviews-list');
-  reviews.forEach(review => {
+  reviews.forEach((review) => {
     ul.appendChild(createReviewHTML(review));
   });
   container.appendChild(ul);
 }
 
 /**
- * Create review HTML and add it to the webpage.
+ * Create review HTML and add it to the web page.
+ * @param {Object} review Restaurant review.
+ * @return {Object} Restaurant review HTML element.
  */
 function createReviewHTML(review) {
   const li = document.createElement('li');
