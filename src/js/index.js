@@ -1,5 +1,5 @@
 import DBHelper from '../js/dbhelper';
-import '../css/styles.css';
+import '../css/all.css';
 
 const current = {
   restaurants: [],

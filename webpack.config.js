@@ -37,7 +37,7 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),
-    new ExtractTextPlugin('css/styles.css'),
+    new ExtractTextPlugin('css/all.css'),
     new HtmlWebpackPlugin({
       title: 'Restaurant Reviews',
       template: 'src/html/common.html',
