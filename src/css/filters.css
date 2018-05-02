@@ -1,0 +1,26 @@
+.filters {
+  height: var(--height-sidebar);
+  padding: 0 var(--gap-vertical);
+  background-color: var(--color-blue);
+  display: flex;
+  align-items: center;
+}
+
+.filters__label {
+  margin-right: var(--gap-vertical);
+  font-size: 15px;
+  color: var(--color-white);
+}
+
+.filters__label:last-child {
+  margin-right: 0;
+}
+
+.filters__select {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-white);
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  height: 35px;
+  letter-spacing: 0;
+}

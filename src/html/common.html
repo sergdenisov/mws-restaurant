@@ -13,11 +13,11 @@
             src="<%= `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap` %>">
     </script>
   </head>
-  <body class="<%= bodyClass ? bodyClass : '' %>">
-    <header>
-      <nav>
-        <h1>
-          <a href="/">Restaurant Reviews</a>
+  <body class="<%= bodyClass ? bodyClass : 'page' %>">
+    <header class="header">
+      <nav class="header__nav">
+        <h1 class="header__title">
+          <a href="/" class="header__link">Restaurant Reviews</a>
         </h1>
       </nav>
       <% if (withBreadcrumbs) { %>
@@ -30,22 +30,27 @@
     </header>
 
     <main id="maincontent">
+      <% if (withFilters) { %>
+        <nav class="filters">
+          <label class="filters__label">
+            <span>Choose neighborhood:</span>
+            <select id="neighborhoods-select" name="neighborhoods" class="filters__select">
+              <option value="all">All Neighborhoods</option>
+            </select>
+          </label>
+          <label class="filters__label">
+            <span>Choose cuisine:</span>
+            <select id="cuisines-select" name="cuisines" class="filters__select">
+              <option value="all">All Cuisines</option>
+            </select>
+          </label>
+        </nav>
+      <% } %>
       <section id="map-container">
         <div id="map"></div>
       </section>
       <% if (withFilters) { %>
-        <section>
-          <div class="filter-options">
-            <h2>Filter Results</h2>
-            <select id="neighborhoods-select" name="neighborhoods">
-              <option value="all">All Neighborhoods</option>
-            </select>
-            <select id="cuisines-select" name="cuisines">
-              <option value="all">All Cuisines</option>
-            </select>
-          </div>
-          <ul id="restaurants-list"></ul>
-        </section>
+        <ul id="restaurants-list"></ul>
       <% } %>
       <% if (withRestaurantContainers) { %>
         <section id="restaurant-container">

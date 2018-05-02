@@ -1,7 +1,10 @@
+@import "variables.css";
 @import "defaults.css";
+@import "page.css";
+@import "header.css";
+@import "breadcrumbs.css";
+@import "filters.css";
 @import "main.css";
-@import "nav.css";
 @import "map.css";
-@import "restaurant-filtering.css";
 @import "restaurant-listing.css";
 @import "restaurant-details.css";
