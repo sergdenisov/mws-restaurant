@@ -1,5 +1,5 @@
 .page {
   display: grid;
   grid-template-columns: auto;
-  grid-template-rows: var(--height-sidebar) auto var(--height-sidebar);
+  grid-template-rows: auto auto auto;
 }

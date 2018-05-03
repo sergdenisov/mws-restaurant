@@ -12,13 +12,15 @@
 }
 
 .header__title {
-  margin: 0;
+  margin: 15px 0;
+  text-align: center;
 }
 
 .header__link {
   color: var(--color-white);
   font-size: 18px;
   font-weight: 200;
+  line-height: 1.25;
   letter-spacing: 10px;
   text-transform: uppercase;
 }
