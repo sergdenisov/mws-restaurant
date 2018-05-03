@@ -21,7 +21,7 @@
         </h1>
       </nav>
       <% if (withBreadcrumbs) { %>
-        <ul id="breadcrumb">
+        <ul class="breadcrumbs js-breadcrumbs">
           <li>
             <a href="/">Home</a>
           </li>
@@ -34,39 +34,39 @@
         <nav class="filters">
           <label class="filters__label">
             <span class="filters__text">Choose neighborhood:</span>
-            <select id="neighborhoods-select" name="neighborhoods" class="filters__select">
+            <select name="neighborhoods" class="filters__select js-neighborhoods">
               <option value="all">All Neighborhoods</option>
             </select>
           </label>
           <label class="filters__label">
             <span class="filters__text">Choose cuisine:</span>
-            <select id="cuisines-select" name="cuisines" class="filters__select">
+            <select name="cuisines" class="filters__select js-cuisines">
               <option value="all">All Cuisines</option>
             </select>
           </label>
         </nav>
       <% } %>
-      <section id="map-container">
-        <div id="map"></div>
+      <section class="map-container">
+        <div class="map js-map"></div>
       </section>
       <% if (withFilters) { %>
-        <ul id="restaurants-list"></ul>
+        <ul class="restaurants-list js-restaurants"></ul>
       <% } %>
       <% if (withRestaurantContainers) { %>
-        <section id="restaurant-container">
-          <h1 id="restaurant-name"></h1>
-          <img src="" id="restaurant-img" alt="Restaurant image">
-          <p id="restaurant-cuisine"></p>
-          <p id="restaurant-address"></p>
-          <table id="restaurant-hours"></table>
+        <section class="restaurant-container js-restaurant-container">
+          <h1 class="restaurant-name js-restaurant-name"></h1>
+          <img src="/" alt="Restaurant image" class="restaurant-image js-restaurant-image">
+          <p class="restaurant-cuisine js-restaurant-cuisine"></p>
+          <p class="restaurant-address js-restaurant-address"></p>
+          <table class="restaurant-hours js-restaurant-hours"></table>
         </section>
-        <section id="reviews-container">
-          <ul id="reviews-list"></ul>
+        <section class="reviews-container js-reviews-container">
+          <ul class="reviews-list js-reviews-list"></ul>
         </section>
       <% } %>
     </main>
 
-    <footer id="footer">
+    <footer class="footer">
       Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
     </footer>
   </body>

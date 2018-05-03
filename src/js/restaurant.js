@@ -14,7 +14,7 @@ window.initMap = () => {
       return;
     }
 
-    const map = new window.google.maps.Map(document.getElementById("map"), {
+    const map = new window.google.maps.Map(document.querySelector(".js-map"), {
       zoom: 16,
       center: restaurant.latlng,
       scrollwheel: false
@@ -59,10 +59,10 @@ function fetchRestaurantFromURL(callback) {
  * @param {Object} restaurant Restaurant details.
  */
 function fillBreadcrumb(restaurant = current.restaurant) {
-  const breadcrumb = document.getElementById("breadcrumb");
+  const breadcrumbs = document.querySelector(".js-breadcrumbs");
   const li = document.createElement("li");
   li.innerHTML = restaurant.name;
-  breadcrumb.appendChild(li);
+  breadcrumbs.appendChild(li);
 }
 
 /**
@@ -91,17 +91,17 @@ function getParameterByName(name, url = window.location.href) {
  * @param {Object} restaurant Restaurant details.
  */
 function fillRestaurantHTML(restaurant = current.restaurant) {
-  const name = document.getElementById("restaurant-name");
+  const container = document.querySelector(".js-restaurant-container");
+  const name = container.querySelector(".js-restaurant-name");
   name.innerHTML = restaurant.name;
 
-  const address = document.getElementById("restaurant-address");
+  const address = container.querySelector(".js-restaurant-address");
   address.innerHTML = restaurant.address;
 
-  const image = document.getElementById("restaurant-img");
-  image.className = "restaurant-img";
+  const image = container.querySelector(".js-restaurant-image");
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
 
-  const cuisine = document.getElementById("restaurant-cuisine");
+  const cuisine = container.querySelector(".js-restaurant-cuisine");
   cuisine.innerHTML = restaurant.cuisine_type;
 
   // fill operating hours
@@ -120,7 +120,7 @@ function fillRestaurantHTML(restaurant = current.restaurant) {
 function fillRestaurantHoursHTML(
   operatingHours = current.restaurant.operating_hours
 ) {
-  const hours = document.getElementById("restaurant-hours");
+  const hours = document.querySelector(".js-restaurant-hours");
 
   for (const [operatingDay, operatingHour] of Object.entries(operatingHours)) {
     const row = document.createElement("tr");
@@ -142,7 +142,7 @@ function fillRestaurantHoursHTML(
  * @param {Object} reviews Restaurant reviews.
  */
 function fillReviewsHTML(reviews = current.restaurant.reviews) {
-  const container = document.getElementById("reviews-container");
+  const container = document.querySelector(".js-reviews-container");
   const title = document.createElement("h2");
   title.innerHTML = "Reviews";
   container.appendChild(title);
@@ -154,7 +154,7 @@ function fillReviewsHTML(reviews = current.restaurant.reviews) {
     return;
   }
 
-  const ul = document.getElementById("reviews-list");
+  const ul = document.querySelector(".js-reviews-list");
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
   });

@@ -1,4 +1,4 @@
-#restaurants-list {
+.restaurants-list {
   background-color: #f3f3f3;
   list-style: outside none none;
   margin: 0;
@@ -6,7 +6,7 @@
   text-align: center;
 }
 
-#restaurants-list li {
+.restaurants-list li {
   background-color: var(--color-white);
   border: 2px solid #ccc;
   font-family: Arial, sans-serif;
@@ -17,7 +17,7 @@
   width: 270px;
 }
 
-#restaurants-list .restaurant-img {
+.restaurants-list .restaurant-image {
   background-color: #ccc;
   display: block;
   margin: 0;
@@ -26,7 +26,7 @@
   min-width: 100%;
 }
 
-#restaurants-list li h1 {
+.restaurants-list li h1 {
   color: #f18200;
   font-family: Arial, sans-serif;
   font-size: 14pt;
@@ -37,12 +37,12 @@
   text-transform: uppercase;
 }
 
-#restaurants-list p {
+.restaurants-list p {
   margin: 0;
   font-size: 11pt;
 }
 
-#restaurants-list li a {
+.restaurants-list li a {
   background-color: orange;
   border-bottom: 3px solid #eee;
   color: var(--color-white);

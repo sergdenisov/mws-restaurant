@@ -25,7 +25,7 @@ window.initMap = () => {
     lat: 40.722216,
     lng: -73.987501
   };
-  current.map = new window.google.maps.Map(document.getElementById("map"), {
+  current.map = new window.google.maps.Map(document.querySelector(".js-map"), {
     zoom: 12,
     center: loc,
     scrollwheel: false
@@ -37,8 +37,8 @@ window.initMap = () => {
  * Update page and map for current restaurants.
  */
 function updateRestaurants() {
-  const cSelect = document.getElementById("cuisines-select");
-  const nSelect = document.getElementById("neighborhoods-select");
+  const cSelect = document.querySelector(".js-cuisines");
+  const nSelect = document.querySelector(".js-neighborhoods");
 
   const cIndex = cSelect.selectedIndex;
   const nIndex = nSelect.selectedIndex;
@@ -68,7 +68,7 @@ function updateRestaurants() {
 function resetRestaurants(restaurants) {
   // Remove all restaurants
   current.restaurants = [];
-  const ul = document.getElementById("restaurants-list");
+  const ul = document.querySelector(".js-restaurants");
   ul.innerHTML = "";
 
   // Remove all map markers
@@ -82,7 +82,7 @@ function resetRestaurants(restaurants) {
  * @param {Object[]} restaurants Selected restaurants.
  */
 function fillRestaurantsHTML(restaurants = current.restaurants) {
-  const ul = document.getElementById("restaurants-list");
+  const ul = document.querySelector(".js-restaurants");
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
   });
@@ -98,7 +98,7 @@ function createRestaurantHTML(restaurant) {
   const li = document.createElement("li");
 
   const image = document.createElement("img");
-  image.className = "restaurant-img";
+  image.className = "restaurant-image";
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
   li.append(image);
 
@@ -158,7 +158,7 @@ function fetchNeighborhoods() {
  * @param {Object[]} neighborhoods Selected neighborhoods.
  */
 function fillNeighborhoodsHTML(neighborhoods = current.neighborhoods) {
-  const select = document.getElementById("neighborhoods-select");
+  const select = document.querySelector(".js-neighborhoods");
 
   neighborhoods.forEach(neighborhood => {
     const option = document.createElement("option");
@@ -191,7 +191,7 @@ function fetchCuisines() {
  * @param {Object[]} cuisines Selected cuisines.
  */
 function fillCuisinesHTML(cuisines = current.cuisines) {
-  const select = document.getElementById("cuisines-select");
+  const select = document.querySelector(".js-cuisines");
 
   cuisines.forEach(cuisine => {
     const option = document.createElement("option");
