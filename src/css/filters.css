@@ -1,5 +1,5 @@
 .filters {
-  padding: 0 var(--gap-vertical);
+  padding: 0 var(--gap-horizontal);
   background-color: var(--color-blue);
   display: flex;
   justify-content: space-around;
@@ -15,10 +15,11 @@
 .filters__label {
   display: inline-block;
   vertical-align: top;
-  margin: 15px var(--gap-vertical) 15px 0;
+  margin: calc(var(--gap-vertical) / 2) var(--gap-horizontal)
+    calc(var(--gap-vertical) / 2) 0;
   font-size: 15px;
   color: var(--color-white);
-  flex: 0 0 0;
+  flex: 0;
 }
 
 @media (min-width: var(--breakpoint-md)) {
@@ -50,7 +51,7 @@
 .filters__select {
   background-color: var(--color-white);
   border: 1px solid var(--color-white);
-  font-family: Arial, sans-serif;
+  font-family: var(--font-family);
   font-size: 16px;
   height: 35px;
   letter-spacing: 0;

@@ -1,6 +1,6 @@
 .header {
   background-color: var(--color-black);
-  padding: 0 var(--gap-vertical);
+  padding: 0 var(--gap-horizontal);
 }
 
 .header__nav {
@@ -12,14 +12,14 @@
 }
 
 .header__title {
-  margin: 15px 0;
+  margin: calc(var(--gap-vertical) / 2) 0;
   text-align: center;
 }
 
 .header__link {
   color: var(--color-white);
   font-size: 18px;
-  font-weight: 200;
+  font-weight: normal;
   line-height: 1.25;
   letter-spacing: 10px;
   text-transform: uppercase;

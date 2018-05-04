@@ -9,7 +9,7 @@
 
 .map__content {
   height: 400px;
-  background-color: var(--color-gray);
+  background-color: var(--color-gray-light);
 }
 
 .inside .map__content {

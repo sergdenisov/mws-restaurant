@@ -10,22 +10,6 @@
   position: absolute;
   width: 50%;
 }
-
-.restaurant-name {
-  color: #f18200;
-  font-family: Arial, sans-serif;
-  font-size: 20pt;
-  font-weight: 200;
-  letter-spacing: 0;
-  margin: 15px 0 30px;
-  text-transform: uppercase;
-  line-height: 1.1;
-}
-
-.restaurant-image {
-  width: 90%;
-}
-
 .restaurant-address {
   font-size: 12pt;
   margin: 10px 0;

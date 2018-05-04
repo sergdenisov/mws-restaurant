@@ -50,12 +50,15 @@
         <div class="map__content js-map"></div>
       </section>
       <% if (withFilters) { %>
-        <ul class="restaurants-list js-restaurants"></ul>
+        <section class="filters-results">
+          <h2 class="filters-results__title">Filters results</h2>
+          <ul class="filters-results__list js-restaurants"></ul>
+        </section>
       <% } %>
       <% if (withRestaurantContainers) { %>
         <section class="restaurant-container js-restaurant-container">
-          <h1 class="restaurant-name js-restaurant-name"></h1>
-          <img src="/" alt="Restaurant image" class="restaurant-image js-restaurant-image">
+          <h1 class="restaurant__name js-restaurant-name"></h1>
+          <img src="/" alt="Restaurant image" class="restaurant__image js-restaurant-image">
           <p class="restaurant-cuisine js-restaurant-cuisine"></p>
           <p class="restaurant-address js-restaurant-address"></p>
           <table class="restaurant-hours js-restaurant-hours"></table>

@@ -1,12 +1,19 @@
 :root {
-  --gap-vertical: 20px;
+  --font-family: Helvetica, Arial, sans-serif;
+  --gap-vertical: 30px;
+  --gap-horizontal: 20px;
   --color-black: #333;
   --color-white: #fff;
   --color-red: #da5040;
   --color-blue: #52bbf9;
   --color-yellow: #fcebaa;
   --color-papaya-whip: #fcf5e4;
-  --color-gray: #e8e8e8;
+  --color-gray-lightest: #e8e8e8;
+  --color-gray-light: #e8e8e8;
+  --color-gray: #818ea3;
+  --color-gray-dark: #4c5056;
+  --color-maroon: #771f18;
+  --color-green: #68b255;
   --breakpoint-sm: 576px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 992px;

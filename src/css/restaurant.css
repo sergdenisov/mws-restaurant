@@ -1,0 +1,44 @@
+.restaurant {
+  background-color: var(--color-gray-lightest);
+  border: 2px solid var(--color-gray);
+}
+
+.restaurant__image {
+  margin: 0;
+  width: 100%;
+}
+
+.restaurant__name {
+  color: #771f18;
+  font-size: 18px;
+  margin: calc(var(--gap-vertical) / 2) 0 var(--gap-vertical);
+  text-transform: uppercase;
+}
+
+.restaurant__address {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.restaurant__button {
+  background-color: var(--color-green);
+  color: var(--color-white);
+  display: inline-block;
+  vertical-align: top;
+  font-size: 14px;
+  margin: calc(var(--gap-vertical) / 2) 0 0;
+  padding: calc(var(--gap-vertical) / 2 - 1px) var(--gap-horizontal)
+    calc(var(--gap-vertical) / 2);
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.restaurant__button:hover,
+.restaurant__button:focus,
+.restaurant__button:active {
+  background-color: var(--color-yellow);
+  color: var(--color-black);
+}

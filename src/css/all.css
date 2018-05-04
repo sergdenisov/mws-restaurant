@@ -6,6 +6,7 @@
 @import "filters.css";
 @import "main.css";
 @import "map.css";
-@import "restaurant-listing.css";
+@import "filters-results.css";
+@import "restaurant.css";
 @import "restaurant-details.css";
 @import "footer.css";
