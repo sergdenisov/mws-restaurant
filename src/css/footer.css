@@ -1,9 +1,27 @@
 .footer {
-  background-color: #444;
-  color: #aaa;
-  font-size: 8pt;
+  background-color: var(--color-gray-dark);
+  color: var(--color-gray-lightest);
+  font-size: 11px;
+  line-height: 1.75;
   letter-spacing: 1px;
-  padding: 25px;
+  padding: var(--gap-horizontal) var(--gap-vertical);
   text-align: center;
   text-transform: uppercase;
+}
+
+.footer__item {
+  display: inline-block;
+  vertical-align: top;
+  width: 100%;
+}
+
+@media screen and (min-width: var(--breakpoint-sm)) {
+  .footer__item {
+    width: auto;
+    margin-right: 7px;
+  }
+
+  .footer__item:last-child {
+    margin-right: 0;
+  }
 }

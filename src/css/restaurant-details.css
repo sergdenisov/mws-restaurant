@@ -5,11 +5,6 @@
   z-index: 1000;
 }
 
-.inside .footer {
-  bottom: 0;
-  position: absolute;
-  width: 50%;
-}
 .restaurant-address {
   font-size: 12pt;
   margin: 10px 0;
