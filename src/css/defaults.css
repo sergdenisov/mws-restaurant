@@ -23,5 +23,5 @@ a {
 a:hover,
 a:focus,
 a:active {
-  color: var(--color-yellow);
+  color: var(--color-orange);
 }

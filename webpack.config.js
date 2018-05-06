@@ -44,8 +44,7 @@ module.exports = {
       template: "src/html/common.html",
       inject: false,
       chunks: ["index"],
-      apiKey: API_KEY,
-      withFilters: true
+      apiKey: API_KEY
     }),
     new HtmlWebpackPlugin({
       title: "Restaurant Info",
@@ -54,9 +53,7 @@ module.exports = {
       inject: false,
       chunks: ["restaurant"],
       apiKey: API_KEY,
-      bodyClass: "inside",
-      withBreadcrumbs: true,
-      withRestaurantContainers: true
+      restaurantPage: true
     })
   ],
   devtool: "inline-source-map",

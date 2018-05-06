@@ -61,6 +61,8 @@ function fetchRestaurantFromURL(callback) {
 function fillBreadcrumb(restaurant = current.restaurant) {
   const breadcrumbs = document.querySelector(".js-breadcrumbs");
   const li = document.createElement("li");
+
+  li.className = "breadcrumbs__item";
   li.innerHTML = restaurant.name;
   breadcrumbs.appendChild(li);
 }
@@ -91,7 +93,7 @@ function getParameterByName(name, url = window.location.href) {
  * @param {Object} restaurant Restaurant details.
  */
 function fillRestaurantHTML(restaurant = current.restaurant) {
-  const container = document.querySelector(".js-restaurant-container");
+  const container = document.querySelector(".js-restaurant");
   const name = container.querySelector(".js-restaurant-name");
   name.innerHTML = restaurant.name;
 
@@ -126,10 +128,12 @@ function fillRestaurantHoursHTML(
     const row = document.createElement("tr");
 
     const day = document.createElement("td");
+    day.className = "restaurant-hours__cell";
     day.innerHTML = operatingDay;
     row.appendChild(day);
 
     const time = document.createElement("td");
+    time.className = "restaurant-hours__cell";
     time.innerHTML = operatingHour;
     row.appendChild(time);
 
@@ -142,7 +146,7 @@ function fillRestaurantHoursHTML(
  * @param {Object} reviews Restaurant reviews.
  */
 function fillReviewsHTML(reviews = current.restaurant.reviews) {
-  const container = document.querySelector(".js-reviews-container");
+  const container = document.querySelector(".js-reviews");
   const title = document.createElement("h2");
   title.innerHTML = "Reviews";
   container.appendChild(title);

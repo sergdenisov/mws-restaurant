@@ -1,19 +1,4 @@
-.inside .map {
-  background: blue none repeat scroll 0 0;
-  height: 87%;
-  position: fixed;
-  right: 0;
-  top: 80px;
-  width: 50%;
-}
-
-.map__content {
-  height: 400px;
+.map {
   background-color: var(--color-gray-light);
-}
-
-.inside .map__content {
-  background-color: #ccc;
   height: 100%;
-  width: 100%;
 }

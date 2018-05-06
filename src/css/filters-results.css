@@ -25,7 +25,6 @@
 
   margin: 15px;
   min-height: 350px;
-  padding: var(--gap-vertical) var(--gap-horizontal);
   width: var(--width);
   flex: 0.25 0 var(--width);
 }

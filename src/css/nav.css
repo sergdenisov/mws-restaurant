@@ -1,22 +1,17 @@
-.header {
+.nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: var(--color-black);
   padding: 0 var(--gap-horizontal);
 }
 
-.header__nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: auto;
-  height: 100%;
-}
-
-.header__title {
+.nav__title {
   margin: calc(var(--gap-vertical) / 2) 0;
   text-align: center;
 }
 
-.header__link {
+.nav__link {
   color: var(--color-white);
   font-size: 18px;
   font-weight: normal;

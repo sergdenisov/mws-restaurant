@@ -1,11 +1,19 @@
 .restaurant {
   background-color: var(--color-gray-lightest);
   border: 2px solid var(--color-gray);
+  padding: var(--gap-vertical) var(--gap-horizontal);
+}
+
+.restaurant_detailed {
+  background-color: transparent;
+  border: 0;
+  padding: 0;
 }
 
 .restaurant__image {
   margin: 0;
   width: 100%;
+  display: block;
 }
 
 .restaurant__name {
@@ -15,9 +23,14 @@
   text-transform: uppercase;
 }
 
+.restaurant_detailed .restaurant__name {
+  font-size: 26px;
+  margin-top: 0;
+}
+
 .restaurant__address {
   margin: 0;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.5;
 }
 
@@ -39,6 +52,17 @@
 .restaurant__button:hover,
 .restaurant__button:focus,
 .restaurant__button:active {
-  background-color: var(--color-yellow);
+  background-color: var(--color-orange);
   color: var(--color-black);
+}
+
+.restaurant__cuisine {
+  background-color: var(--color-black);
+  color: var(--color-papaya-whip);
+  font-size: 18px;
+  letter-spacing: 10px;
+  margin: 0 0 var(--gap-vertical);
+  padding: 10px var(--gap-horizontal);
+  text-align: center;
+  text-transform: uppercase;
 }

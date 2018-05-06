@@ -1,32 +1,19 @@
 .breadcrumbs {
-  padding: 10px 40px 16px;
+  padding: calc(var(--gap-vertical) / 2) var(--gap-horizontal)
+    var(--gap-vertical);
   list-style: none;
-  background-color: #eee;
-  font-size: 17px;
+  font-size: 16px;
   margin: 0;
-  width: calc(50% - 80px);
+  background-color: var(--color-papaya-whip);
 }
 
-/* Display list items side by side */
-.breadcrumbs li {
+.breadcrumbs__item {
   display: inline;
+  vertical-align: top;
 }
 
-/* Add a slash symbol (/) before/behind each list item */
-.breadcrumbs li + li::before {
-  padding: 8px;
-  color: black;
-  content: "/\00a0";
-}
-
-/* Add a color to all links inside the list */
-.breadcrumbs li a {
-  color: #0275d8;
-  text-decoration: none;
-}
-
-/* Add a color on mouse-over */
-.breadcrumbs li a:hover {
-  color: #01447e;
-  text-decoration: underline;
+.breadcrumbs__item + .breadcrumbs__item::before {
+  padding: 10px;
+  color: var(--color-black);
+  content: ">";
 }

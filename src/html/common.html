@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<% const {
-  title, bodyClass, withBreadcrumbs, withFilters, withRestaurantContainers, apiKey
-} = htmlWebpackPlugin.options; %>
+<% const { title, apiKey, restaurantPage} = htmlWebpackPlugin.options; %>
 <% const { css, js } = htmlWebpackPlugin.files; %>
 <html lang="en">
   <head>
@@ -13,24 +11,24 @@
             src="<%= `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap` %>">
     </script>
   </head>
-  <body class="<%= bodyClass ? bodyClass : 'page' %>">
-    <header class="header">
-      <nav class="header__nav">
-        <h1 class="header__title">
-          <a href="/" class="header__link">Restaurant Reviews</a>
+  <body>
+    <header>
+      <nav class="nav">
+        <h1 class="nav__title">
+          <a href="/" class="nav__link">Restaurant Reviews</a>
         </h1>
       </nav>
-      <% if (withBreadcrumbs) { %>
+      <% if (restaurantPage) { %>
         <ul class="breadcrumbs js-breadcrumbs">
-          <li>
-            <a href="/">Home</a>
+          <li class="breadcrumbs__item">
+            <a href="/" class="breadcrumbs__link">Home</a>
           </li>
         </ul>
       <% } %>
     </header>
 
-    <main class="main">
-      <% if (withFilters) { %>
+    <main class="main<%= restaurantPage ? ' main_splitted' : '' %>">
+      <% if (!restaurantPage) { %>
         <nav class="filters">
           <label class="filters__label">
             <span class="filters__text">Choose neighborhood:</span>
@@ -46,25 +44,24 @@
           </label>
         </nav>
       <% } %>
-      <section class="map">
-        <div class="map__content js-map"></div>
+      <section class="main__map">
+        <div class="map js-map"></div>
       </section>
-      <% if (withFilters) { %>
+      <% if (restaurantPage) { %>
+        <section class="restaurant restaurant_detailed main__restaurant js-restaurant">
+          <h2 class="restaurant__name js-restaurant-name"></h2>
+          <img src="/" alt="Restaurant image" class="restaurant__image js-restaurant-image">
+          <h3 class="restaurant__cuisine js-restaurant-cuisine"></h3>
+          <p class="restaurant__address js-restaurant-address"></p>
+          <table class="restaurant-hours js-restaurant-hours"></table>
+        </section>
+        <section class="reviews main__reviews js-reviews">
+          <ul class="reviews__list js-reviews-list"></ul>
+        </section>
+      <% } else { %>
         <section class="filters-results">
           <h2 class="filters-results__title">Filters results</h2>
           <ul class="filters-results__list js-restaurants"></ul>
-        </section>
-      <% } %>
-      <% if (withRestaurantContainers) { %>
-        <section class="restaurant-container js-restaurant-container">
-          <h1 class="restaurant__name js-restaurant-name"></h1>
-          <img src="/" alt="Restaurant image" class="restaurant__image js-restaurant-image">
-          <p class="restaurant-cuisine js-restaurant-cuisine"></p>
-          <p class="restaurant-address js-restaurant-address"></p>
-          <table class="restaurant-hours js-restaurant-hours"></table>
-        </section>
-        <section class="reviews-container js-reviews-container">
-          <ul class="reviews-list js-reviews-list"></ul>
         </section>
       <% } %>
     </main>

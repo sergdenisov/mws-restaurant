@@ -1,3 +1,45 @@
 .main {
   background-color: var(--color-papaya-whip);
 }
+
+.main_splitted {
+  display: grid;
+  grid-template-areas:
+    "restaurant"
+    "map"
+    "reviews";
+  padding: 0 var(--gap-horizontal);
+  grid-row-gap: var(--gap-vertical);
+}
+
+@media screen and (min-width: var(--breakpoint-lg)) {
+  .main_splitted {
+    grid-template-columns: calc(50% - var(--gap-horizontal) / 2);
+    grid-template-areas:
+      "restaurant map"
+      "reviews reviews";
+    grid-column-gap: var(--gap-horizontal);
+  }
+}
+
+.main__map {
+  height: 400px;
+}
+
+.main_splitted .main__map {
+  grid-area: map;
+}
+
+@media screen and (min-width: var(--breakpoint-lg)) {
+  .main_splitted .main__map {
+    height: auto;
+  }
+}
+
+.main__restaurant {
+  grid-area: restaurant;
+}
+
+.main__reviews {
+  grid-area: reviews;
+}
