@@ -148,6 +148,7 @@ function fillRestaurantHoursHTML(
 function fillReviewsHTML(reviews = current.restaurant.reviews) {
   const container = document.querySelector(".js-reviews");
   const title = document.createElement("h2");
+  title.className = "reviews__title";
   title.innerHTML = "Reviews";
   container.appendChild(title);
 
@@ -172,19 +173,25 @@ function fillReviewsHTML(reviews = current.restaurant.reviews) {
  */
 function createReviewHTML(review) {
   const li = document.createElement("li");
-  const name = document.createElement("p");
+  li.className = "reviews__item";
+
+  const name = document.createElement("h3");
+  name.className = "reviews__name";
   name.innerHTML = review.name;
   li.appendChild(name);
 
-  const date = document.createElement("p");
+  const date = document.createElement("time");
+  date.className = "reviews__date";
   date.innerHTML = review.date;
   li.appendChild(date);
 
-  const rating = document.createElement("p");
+  const rating = document.createElement("strong");
+  rating.className = "reviews__rating";
   rating.innerHTML = `Rating: ${review.rating}`;
   li.appendChild(rating);
 
   const comments = document.createElement("p");
+  comments.className = "reviews__comments";
   comments.innerHTML = review.comments;
   li.appendChild(comments);
 

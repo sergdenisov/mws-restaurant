@@ -21,10 +21,8 @@
 }
 
 .filters-results__item {
-  --width: 280px;
-
   margin: 15px;
   min-height: 350px;
-  width: var(--width);
-  flex: 0.25 0 var(--width);
+  width: var(--width-block);
+  flex: 0.25 0 var(--width-block);
 }
