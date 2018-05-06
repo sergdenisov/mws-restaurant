@@ -99,8 +99,9 @@ function createRestaurantHTML(restaurant) {
   li.className = "restaurant filters-results__item";
 
   const image = document.createElement("img");
-  image.className = "restaurant__image";
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.alt = "Restaurant image";
+  image.className = "restaurant__image";
   li.append(image);
 
   const name = document.createElement("h2");
