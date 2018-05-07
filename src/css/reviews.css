@@ -19,7 +19,7 @@
 }
 
 .reviews__item {
-  flex: 0.25 0 var(--width-block);
+  flex: 0.5 0 var(--width-block);
   margin: 10px;
   background-color: var(--color-white);
   padding: var(--gap-vertical) var(--gap-horizontal);
