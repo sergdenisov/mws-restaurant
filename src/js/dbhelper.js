@@ -7,8 +7,8 @@ export default class DBHelper {
   /**
    * Callback function for success restaurants fetch case.
    * @callback callback
-   * @param {string} error Fetch response error.
-   * @param {Object[]} restaurants Fetch response data.
+   * @param {string | null} error Fetch response error.
+   * @param {Object[] | Object | null} restaurants Fetch response data.
    */
 
   /**
@@ -129,7 +129,7 @@ export default class DBHelper {
 
   /**
    * Restaurant page URL.
-   * @param {number | string} restaurant Restaurant ID.
+   * @param {Object} restaurant Restaurant details.
    * @return {string} Restaurant URL.
    */
   static urlForRestaurant(restaurant) {
@@ -138,7 +138,7 @@ export default class DBHelper {
 
   /**
    * Restaurant image URL.
-   * @param {number | string} restaurant Restaurant ID.
+   * @param {Object} restaurant Restaurant details.
    * @return {string} Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
@@ -147,7 +147,7 @@ export default class DBHelper {
 
   /**
    * Map marker for a restaurant.
-   * @param {number | string} restaurant Restaurant ID.
+   * @param {Object} restaurant Restaurant details.
    * @param {Object} map Google Maps' instance.
    * @return {Object} Google Maps' Marker instance.
    */
