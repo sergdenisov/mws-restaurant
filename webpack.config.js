@@ -25,14 +25,12 @@ module.exports = {
       },
       {
         test: /\.jpg$/,
-        use: [
-          {
-            loader: "file-loader",
-            options: {
-              name: "images/[name].[ext]"
-            }
-          }
-        ]
+        loader: "responsive-loader",
+        options: {
+          min: 200,
+          max: 800,
+          name: "images/[name]-[width].[ext]"
+        }
       }
     ]
   },

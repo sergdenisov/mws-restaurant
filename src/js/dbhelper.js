@@ -137,11 +137,11 @@ export default class DBHelper {
   }
 
   /**
-   * Restaurant image URL.
+   * Restaurant image request.
    * @param {Object} restaurant Restaurant details.
-   * @return {string} Restaurant image URL.
+   * @return {string} Restaurant image request.
    */
-  static imageUrlForRestaurant(restaurant) {
+  static imageRequestForRestaurant(restaurant) {
     return images(`./${restaurant.photograph}`);
   }
 
