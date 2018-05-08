@@ -2,6 +2,7 @@ const path = require("path");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 
 const API_KEY = "AIzaSyCRnfUWfANw0glEAZwOq4vauiP5iZLAXa0";
 
@@ -37,6 +38,23 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(["dist"]),
     new ExtractTextPlugin("css/all.css"),
+    new FaviconsWebpackPlugin({
+      logo: "./src/images/favicon/favicon.png",
+      prefix: "images/favicons/",
+      persistentCache: false,
+      icons: {
+        android: false,
+        appleIcon: false,
+        appleStartup: false,
+        coast: false,
+        favicons: true,
+        firefox: false,
+        opengraph: false,
+        twitter: false,
+        yandex: false,
+        windows: false
+      }
+    }),
     new HtmlWebpackPlugin({
       title: "Restaurant Reviews",
       template: "src/html/common.html",
