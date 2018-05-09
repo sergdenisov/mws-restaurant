@@ -2,6 +2,7 @@
   background-color: var(--color-gray-lightest);
   border: 2px solid var(--color-gray);
   padding: var(--gap-vertical) var(--gap-horizontal);
+  box-sizing: border-box;
 }
 
 .restaurant_detailed {
