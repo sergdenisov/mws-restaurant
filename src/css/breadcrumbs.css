@@ -1,0 +1,19 @@
+.breadcrumbs {
+  padding: calc(var(--gap-vertical) / 2) var(--gap-horizontal)
+    var(--gap-vertical);
+  list-style: none;
+  font-size: 16px;
+  margin: 0;
+  background-color: var(--color-papaya-whip);
+}
+
+.breadcrumbs__item {
+  display: inline;
+  vertical-align: top;
+}
+
+.breadcrumbs__item + .breadcrumbs__item::before {
+  padding: 10px;
+  color: var(--color-black);
+  content: ">";
+}

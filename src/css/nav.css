@@ -1,0 +1,21 @@
+.nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-black);
+  padding: 0 var(--gap-horizontal);
+}
+
+.nav__title {
+  margin: calc(var(--gap-vertical) / 2) 0;
+  text-align: center;
+}
+
+.nav__link {
+  color: var(--color-white);
+  font-size: 18px;
+  font-weight: normal;
+  line-height: 1.25;
+  letter-spacing: 10px;
+  text-transform: uppercase;
+}

@@ -1,0 +1,27 @@
+*:focus {
+  outline: var(--color-red) solid 2px;
+}
+
+html {
+  font-family: var(--font-family);
+  font-size: 14px;
+  line-height: 1;
+  color: var(--color-black);
+  margin: 0;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: var(--color-blue);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover,
+a:focus,
+a:active {
+  color: var(--color-orange);
+}

@@ -1,0 +1,13 @@
+.restaurant-hours {
+  margin-top: calc(var(--gap-vertical) / 2);
+  color: var(--color-gray);
+}
+
+.restaurant-hours__cell {
+  padding: 2px 10px;
+  vertical-align: top;
+}
+
+.restaurant-hours__cell:first-child {
+  padding-left: 0;
+}
