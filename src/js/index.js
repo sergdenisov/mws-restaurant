@@ -1,5 +1,10 @@
 import DBHelper from "../js/dbhelper";
 import "../css/all.css";
+import runtime from "serviceworker-webpack-plugin/lib/runtime";
+
+if ("serviceWorker" in navigator) {
+  runtime.register();
+}
 
 const current = {
   restaurants: [],

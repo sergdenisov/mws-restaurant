@@ -3,6 +3,7 @@ const CleanWebpackPlugin = require("clean-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
+const ServiceWorkerWebpackPlugin = require("serviceworker-webpack-plugin");
 
 const API_KEY = "AIzaSyCRnfUWfANw0glEAZwOq4vauiP5iZLAXa0";
 
@@ -70,6 +71,9 @@ module.exports = {
       chunks: ["restaurant"],
       apiKey: API_KEY,
       restaurantPage: true
+    }),
+    new ServiceWorkerWebpackPlugin({
+      entry: path.join(__dirname, "src/js/sw.js")
     })
   ],
   devtool: "inline-source-map",
