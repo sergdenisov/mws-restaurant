@@ -1,4 +1,5 @@
 const images = require.context("../images", false, /\.jpg$/);
+const BACKEND_URL = "http://localhost:1337";
 
 /**
  * Common database helper functions.
@@ -16,9 +17,10 @@ export default class DBHelper {
    * @param {callback} callback Callback function for restaurants fetch.
    */
   static fetchRestaurants(callback) {
-    import("../data/restaurants.json")
-      .then(json => {
-        callback(null, json.restaurants);
+    fetch(`${BACKEND_URL}/restaurants`)
+      .then(response => response.json())
+      .then(restaurants => {
+        callback(null, restaurants);
       })
       .catch(error => {
         callback(error, null);
@@ -28,25 +30,17 @@ export default class DBHelper {
   /**
    * Fetch a restaurant by its ID.
    * @param {number} id Restaurant ID.
-   * @param {callback} callback Callback function for restaurants fetch.
+   * @param {callback} callback Callback function for restaurant fetch.
    */
   static fetchRestaurantById(id, callback) {
-    // fetch all restaurants with proper error handling.
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
-        callback(error, null);
-        return;
-      }
-
-      const restaurant = restaurants.find(r => String(r.id) === id);
-      if (restaurant) {
-        // Got the restaurant
+    fetch(`${BACKEND_URL}/restaurants/${id}`)
+      .then(response => response.json())
+      .then(restaurant => {
         callback(null, restaurant);
-      } else {
-        // Restaurant does not exist in the database
+      })
+      .catch(error => {
         callback("Restaurant does not exist", null);
-      }
-    });
+      });
   }
 
   /**
@@ -142,7 +136,9 @@ export default class DBHelper {
    * @return {string} Restaurant image request.
    */
   static imageRequestForRestaurant(restaurant) {
-    return images(`./${restaurant.photograph}`);
+    const photograph = restaurant.photograph || "default";
+
+    return images(`./${photograph}.jpg`);
   }
 
   /**
