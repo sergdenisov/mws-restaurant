@@ -10,7 +10,7 @@
     "build": "webpack",
     "watch": "webpack --watch",
     "dev": "webpack-dev-server --open",
-    "start": "webpack; http-server ./dist -a localhost -c-1 -o"
+    "start": "webpack; http-server ./dist -a localhost --gzip -o"
   },
   "lint-staged": {
     "*.js": [
