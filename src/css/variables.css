@@ -7,6 +7,7 @@
   --color-white: #fff;
   --color-red: #da5040;
   --color-blue: #52bbf9;
+  --color-blue-dark: #065684;
   --color-orange: #f3a270;
   --color-papaya-whip: #fcf5e4;
   --color-gray-lightest: #e8e8e8;
@@ -14,7 +15,7 @@
   --color-gray: #818ea3;
   --color-gray-dark: #4c5056;
   --color-maroon: #771f18;
-  --color-green: #68b255;
+  --color-green: #36632c;
   --breakpoint-sm: 576px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 992px;
