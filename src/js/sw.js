@@ -11,15 +11,6 @@ self.addEventListener("install", function(event) {
 });
 
 self.addEventListener("fetch", function(event) {
-  const requestUrl = new URL(event.request.url);
-
-  if (
-    !assetsUrls.some(assetsUrl => requestUrl.pathname.startsWith(assetsUrl))
-  ) {
-    event.respondWith(fetch(event.request));
-    return;
-  }
-
   event.respondWith(
     caches.match(event.request).then(function(response) {
       if (response && !self.navigator.onLine) {

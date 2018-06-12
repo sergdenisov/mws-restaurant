@@ -1,3 +1,5 @@
+import idb from "idb";
+
 const images = require.context("../images", false, /\.jpg$/);
 const BACKEND_URL = "http://localhost:1337";
 
@@ -10,25 +12,78 @@ export default new class DBHelper {
    */
   constructor() {
     this.fetchRestaurantsPromise = null;
+
+    if (!("indexedDB" in window)) {
+      return;
+    }
+
+    this.dbPromise = idb.open("mwsRestaurant", 1, function(upgradeDb) {
+      upgradeDb.createObjectStore("restaurants", { keyPath: "id" });
+    });
   }
 
   /**
-   * Fetch all restaurants.
+   * Fetch all restaurants from network.
+   * @return {Promise} Promise object represents all restaurants.
+   */
+  fetchRestaurantsFromNetwork() {
+    return fetch(`${BACKEND_URL}/restaurants`)
+      .then(response => response.json())
+      .then(restaurants => {
+        if (this.dbPromise) {
+          this.dbPromise.then(db => {
+            const store = db
+              .transaction("restaurants", "readwrite")
+              .objectStore("restaurants");
+
+            for (const restaurant of restaurants) {
+              store.put(restaurant);
+            }
+          });
+        }
+
+        return restaurants;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  /**
+   * Fetch all restaurants from IndexedDB or network.
    * @return {Promise} Promise object represents all restaurants.
    */
   fetchRestaurants() {
-    if (!this.fetchRestaurantsPromise) {
-      this.fetchRestaurantsPromise = fetch(`${BACKEND_URL}/restaurants`)
-        .then(response => response.json())
-        .then(restaurants => {
+    if (this.fetchRestaurantsPromise) {
+      return this.fetchRestaurantsPromise;
+    }
+
+    if (!this.dbPromise) {
+      this.fetchRestaurantsPromise = this.fetchRestaurantsFromNetwork();
+      return this.fetchRestaurantsPromise;
+    }
+
+    this.fetchRestaurantsPromise = this.dbPromise
+      .then(db =>
+        db
+          .transaction("restaurants")
+          .objectStore("restaurants")
+          .getAll()
+      )
+      .then(restaurants => {
+        if (restaurants && restaurants.length) {
+          return restaurants;
+        }
+
+        return this.fetchRestaurantsFromNetwork().then(restaurants => {
           this.fetchRestaurantsPromise = null;
           return restaurants;
-        })
-        .catch(error => {
-          console.error(error);
-          this.fetchRestaurantsPromise = null;
         });
-    }
+      })
+      .catch(error => {
+        console.error(error);
+        this.fetchRestaurantsPromise = null;
+      });
 
     return this.fetchRestaurantsPromise;
   }
@@ -38,10 +93,50 @@ export default new class DBHelper {
    * @param {string} id Restaurant ID.
    * @return {Promise} Promise object represents the restaurant.
    */
-  fetchRestaurantById(id) {
+  fetchRestaurantByIdFromNetwork(id) {
     return fetch(`${BACKEND_URL}/restaurants/${id}`)
       .then(response => response.json())
-      .then(restaurant => restaurant)
+      .then(restaurant => {
+        if (this.dbPromise) {
+          this.dbPromise.then(db => {
+            db
+              .transaction("restaurants", "readwrite")
+              .objectStore("restaurants")
+              .put(restaurant);
+          });
+        }
+
+        return restaurant;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  /**
+   * Fetch a restaurant by its ID from IndexedDB or network.
+   * @param {string} id Restaurant ID.
+   * @return {Promise} Promise object represents the restaurant.
+   */
+  fetchRestaurantById(id) {
+    if (!this.dbPromise) {
+      return this.fetchRestaurantByIdFromNetwork(id);
+    }
+
+    return this.dbPromise
+      .then(db =>
+        db
+          .transaction("restaurants")
+          .objectStore("restaurants")
+          .get(parseInt(id, 10))
+      )
+      .then(restaurant => {
+        if (restaurant) {
+          return restaurant;
+        }
+
+        return this.fetchRestaurantByIdFromNetwork(id);
+      })
       .catch(error => {
         console.error(error);
       });
