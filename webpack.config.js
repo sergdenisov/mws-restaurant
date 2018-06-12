@@ -4,6 +4,7 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 const ServiceWorkerWebpackPlugin = require("serviceworker-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const API_KEY = "AIzaSyCRnfUWfANw0glEAZwOq4vauiP5iZLAXa0";
 
@@ -19,6 +20,16 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env"]
+          }
+        }
+      },
       {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({
@@ -43,17 +54,19 @@ module.exports = {
       logo: "./src/images/favicon/favicon.png",
       prefix: "images/favicons/",
       persistentCache: false,
+      background: "#fcf5e4",
+      title: "MWS Restaurant",
       icons: {
-        android: false,
-        appleIcon: false,
-        appleStartup: false,
-        coast: false,
+        android: true,
+        appleIcon: true,
+        appleStartup: true,
+        coast: true,
         favicons: true,
-        firefox: false,
-        opengraph: false,
-        twitter: false,
-        yandex: false,
-        windows: false
+        firefox: true,
+        opengraph: true,
+        twitter: true,
+        yandex: true,
+        windows: true
       }
     }),
     new HtmlWebpackPlugin({
@@ -74,7 +87,8 @@ module.exports = {
     }),
     new ServiceWorkerWebpackPlugin({
       entry: path.join(__dirname, "src/js/sw.js")
-    })
+    }),
+    new CopyWebpackPlugin([{ from: "src/manifest.json" }])
   ],
   devtool: "inline-source-map",
   devServer: {

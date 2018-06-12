@@ -1,6 +1,6 @@
 .restaurant-hours {
   margin-top: calc(var(--gap-vertical) / 2);
-  color: var(--color-gray);
+  color: var(--color-gray-dark);
 }
 
 .restaurant-hours__cell {

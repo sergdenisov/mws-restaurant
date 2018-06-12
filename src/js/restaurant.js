@@ -12,50 +12,38 @@ const current = { restaurant: null };
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
-  fetchRestaurantFromURL((error, restaurant) => {
-    if (error) {
-      // Got an error!
-      console.error(error);
-      return;
-    }
-
+  fetchRestaurantFromURL().then(restaurant => {
     const map = new window.google.maps.Map(document.querySelector(".js-map"), {
       zoom: 16,
       center: restaurant.latlng,
       scrollwheel: false
     });
-    fillBreadcrumb();
-    DBHelper.mapMarkerForRestaurant(current.restaurant, map);
+    fillBreadcrumb(restaurant);
+    DBHelper.mapMarkerForRestaurant(restaurant, map);
   });
 };
 
 /**
  * Get current restaurant from page URL.
- * @param {callback} callback Callback function for restaurants fetch.
+ * @return {Promise} Promise object represents the restaurant.
  */
-function fetchRestaurantFromURL(callback) {
+function fetchRestaurantFromURL() {
   if (current.restaurant) {
     // restaurant already fetched!
-    callback(null, current.restaurant);
-    return;
+    return Promise.resolve(current.restaurant);
   }
 
   const id = getParameterByName("id");
   if (!id) {
     // no id found in URL
-    callback("No restaurant id in URL", null);
-    return;
+    console.error("No restaurant id in URL");
+    return Promise.reject();
   }
 
-  DBHelper.fetchRestaurantById(id, (error, restaurant) => {
+  return DBHelper.fetchRestaurantById(id).then(restaurant => {
+    fillRestaurantHTML(restaurant);
     current.restaurant = restaurant;
-    if (!restaurant) {
-      console.error(error);
-      return;
-    }
-
-    fillRestaurantHTML();
-    callback(null, restaurant);
+    return restaurant;
   });
 }
 
@@ -63,7 +51,7 @@ function fetchRestaurantFromURL(callback) {
  * Add restaurant name to the breadcrumb navigation menu.
  * @param {Object} restaurant Restaurant details.
  */
-function fillBreadcrumb(restaurant = current.restaurant) {
+function fillBreadcrumb(restaurant) {
   const breadcrumbs = document.querySelector(".js-breadcrumbs");
   const li = document.createElement("li");
 
@@ -97,7 +85,7 @@ function getParameterByName(name, url = window.location.href) {
  * Create restaurant HTML and add it to the web page.
  * @param {Object} restaurant Restaurant details.
  */
-function fillRestaurantHTML(restaurant = current.restaurant) {
+function fillRestaurantHTML(restaurant) {
   const container = document.querySelector(".js-restaurant");
   const name = container.querySelector(".js-restaurant-name");
   name.innerHTML = restaurant.name;
@@ -115,20 +103,18 @@ function fillRestaurantHTML(restaurant = current.restaurant) {
 
   // fill operating hours
   if (restaurant.operating_hours) {
-    fillRestaurantHoursHTML();
+    fillRestaurantHoursHTML(restaurant.operating_hours);
   }
 
   // fill reviews
-  fillReviewsHTML();
+  fillReviewsHTML(restaurant.reviews);
 }
 
 /**
  * Create restaurant operating hours HTML table and add it to the web page.
  * @param {Object} operatingHours Restaurant operating hours.
  */
-function fillRestaurantHoursHTML(
-  operatingHours = current.restaurant.operating_hours
-) {
+function fillRestaurantHoursHTML(operatingHours) {
   const hours = document.querySelector(".js-restaurant-hours");
 
   for (const [operatingDay, operatingHour] of Object.entries(operatingHours)) {
@@ -152,7 +138,7 @@ function fillRestaurantHoursHTML(
  * Create all reviews HTML and add them to the web page.
  * @param {Object} reviews Restaurant reviews.
  */
-function fillReviewsHTML(reviews = current.restaurant.reviews) {
+function fillReviewsHTML(reviews) {
   const container = document.querySelector(".js-reviews");
   const title = document.createElement("h2");
   title.className = "reviews__title";

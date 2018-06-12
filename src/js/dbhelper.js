@@ -1,73 +1,157 @@
+import idb from "idb";
+
 const images = require.context("../images", false, /\.jpg$/);
+const BACKEND_URL = "http://localhost:1337";
 
 /**
  * Common database helper functions.
  */
-export default class DBHelper {
+export default new class DBHelper {
   /**
-   * Callback function for success restaurants fetch case.
-   * @callback callback
-   * @param {string | null} error Fetch response error.
-   * @param {Object[] | Object | null} restaurants Fetch response data.
+   * DBHelper constructor function
    */
+  constructor() {
+    this.fetchRestaurantsPromise = null;
 
-  /**
-   * Fetch all restaurants.
-   * @param {callback} callback Callback function for restaurants fetch.
-   */
-  static fetchRestaurants(callback) {
-    import("../data/restaurants.json")
-      .then(json => {
-        callback(null, json.restaurants);
-      })
-      .catch(error => {
-        callback(error, null);
-      });
-  }
+    if (!("indexedDB" in window)) {
+      return;
+    }
 
-  /**
-   * Fetch a restaurant by its ID.
-   * @param {number} id Restaurant ID.
-   * @param {callback} callback Callback function for restaurants fetch.
-   */
-  static fetchRestaurantById(id, callback) {
-    // fetch all restaurants with proper error handling.
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
-        callback(error, null);
-        return;
-      }
-
-      const restaurant = restaurants.find(r => String(r.id) === id);
-      if (restaurant) {
-        // Got the restaurant
-        callback(null, restaurant);
-      } else {
-        // Restaurant does not exist in the database
-        callback("Restaurant does not exist", null);
-      }
+    this.dbPromise = idb.open("mwsRestaurant", 1, function(upgradeDb) {
+      upgradeDb.createObjectStore("restaurants", { keyPath: "id" });
     });
   }
 
   /**
-   * Fetch restaurants by a cuisine and a neighborhood with proper error
+   * Fetch all restaurants from network.
+   * @return {Promise} Promise object represents all restaurants.
+   */
+  fetchRestaurantsFromNetwork() {
+    return fetch(`${BACKEND_URL}/restaurants`)
+      .then(response => response.json())
+      .then(restaurants => {
+        if (this.dbPromise) {
+          this.dbPromise.then(db => {
+            const store = db
+              .transaction("restaurants", "readwrite")
+              .objectStore("restaurants");
+
+            for (const restaurant of restaurants) {
+              store.put(restaurant);
+            }
+          });
+        }
+
+        return restaurants;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  /**
+   * Fetch all restaurants from IndexedDB or network.
+   * @return {Promise} Promise object represents all restaurants.
+   */
+  fetchRestaurants() {
+    if (this.fetchRestaurantsPromise) {
+      return this.fetchRestaurantsPromise;
+    }
+
+    if (!this.dbPromise) {
+      this.fetchRestaurantsPromise = this.fetchRestaurantsFromNetwork();
+      return this.fetchRestaurantsPromise;
+    }
+
+    this.fetchRestaurantsPromise = this.dbPromise
+      .then(db =>
+        db
+          .transaction("restaurants")
+          .objectStore("restaurants")
+          .getAll()
+      )
+      .then(restaurants => {
+        if (restaurants && restaurants.length) {
+          return restaurants;
+        }
+
+        return this.fetchRestaurantsFromNetwork().then(restaurants => {
+          this.fetchRestaurantsPromise = null;
+          return restaurants;
+        });
+      })
+      .catch(error => {
+        console.error(error);
+        this.fetchRestaurantsPromise = null;
+      });
+
+    return this.fetchRestaurantsPromise;
+  }
+
+  /**
+   * Fetch a restaurant by its ID.
+   * @param {string} id Restaurant ID.
+   * @return {Promise} Promise object represents the restaurant.
+   */
+  fetchRestaurantByIdFromNetwork(id) {
+    return fetch(`${BACKEND_URL}/restaurants/${id}`)
+      .then(response => response.json())
+      .then(restaurant => {
+        if (this.dbPromise) {
+          this.dbPromise.then(db => {
+            db
+              .transaction("restaurants", "readwrite")
+              .objectStore("restaurants")
+              .put(restaurant);
+          });
+        }
+
+        return restaurant;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  /**
+   * Fetch a restaurant by its ID from IndexedDB or network.
+   * @param {string} id Restaurant ID.
+   * @return {Promise} Promise object represents the restaurant.
+   */
+  fetchRestaurantById(id) {
+    if (!this.dbPromise) {
+      return this.fetchRestaurantByIdFromNetwork(id);
+    }
+
+    return this.dbPromise
+      .then(db =>
+        db
+          .transaction("restaurants")
+          .objectStore("restaurants")
+          .get(parseInt(id, 10))
+      )
+      .then(restaurant => {
+        if (restaurant) {
+          return restaurant;
+        }
+
+        return this.fetchRestaurantByIdFromNetwork(id);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  /**
+   * Fetch restaurants by a cuisine and a neighborhood.
    * handling.
    * @param {string} cuisine Cuisine type.
    * @param {string} neighborhood Neighborhood name.
-   * @param {callback} callback Callback function for restaurants fetch.
+   * @return {Promise} Promise object represents filtered restaurants.
    */
-  static fetchRestaurantByCuisineAndNeighborhood(
-    cuisine,
-    neighborhood,
-    callback
-  ) {
+  fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood) {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
-        callback(error, null);
-        return;
-      }
-
+    return this.fetchRestaurants().then(restaurants => {
       let results = restaurants;
       if (cuisine !== "all") {
         // filter by cuisine
@@ -77,53 +161,38 @@ export default class DBHelper {
         // filter by neighborhood
         results = results.filter(r => r.neighborhood === neighborhood);
       }
-      callback(null, results);
+
+      return results;
     });
   }
 
   /**
-   * Fetch all neighborhoods with proper error handling.
-   * @param {callback} callback Callback function for restaurants fetch.
+   * Fetch all neighborhoods.
+   * @return {Promise} Promise object represents all neighborhoods.
    */
-  static fetchNeighborhoods(callback) {
+  fetchNeighborhoods() {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
-        callback(error, null);
-        return;
-      }
-
+    return this.fetchRestaurants().then(restaurants => {
       // Get all neighborhoods from all restaurants
       const neighborhoods = restaurants.map(
         (v, i) => restaurants[i].neighborhood
       );
       // Remove duplicates from neighborhoods
-      const uniqueNeighborhoods = neighborhoods.filter(
-        (v, i) => neighborhoods.indexOf(v) === i
-      );
-      callback(null, uniqueNeighborhoods);
+      return neighborhoods.filter((v, i) => neighborhoods.indexOf(v) === i);
     });
   }
 
   /**
    * Fetch all cuisines with proper error handling.
-   * @param {callback} callback Callback function for restaurants fetch.
+   * @return {Promise} Promise object represents all cuisines.
    */
-  static fetchCuisines(callback) {
+  fetchCuisines() {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants((error, restaurants) => {
-      if (error) {
-        callback(error, null);
-        return;
-      }
-
+    return this.fetchRestaurants().then(restaurants => {
       // Get all cuisines from all restaurants
       const cuisines = restaurants.map((v, i) => restaurants[i].cuisine_type);
       // Remove duplicates from cuisines
-      const uniqueCuisines = cuisines.filter(
-        (v, i) => cuisines.indexOf(v) === i
-      );
-      callback(null, uniqueCuisines);
+      return cuisines.filter((v, i) => cuisines.indexOf(v) === i);
     });
   }
 
@@ -132,7 +201,7 @@ export default class DBHelper {
    * @param {Object} restaurant Restaurant details.
    * @return {string} Restaurant URL.
    */
-  static urlForRestaurant(restaurant) {
+  urlForRestaurant(restaurant) {
     return `./restaurant.html?id=${restaurant.id}`;
   }
 
@@ -141,8 +210,10 @@ export default class DBHelper {
    * @param {Object} restaurant Restaurant details.
    * @return {string} Restaurant image request.
    */
-  static imageRequestForRestaurant(restaurant) {
-    return images(`./${restaurant.photograph}`);
+  imageRequestForRestaurant(restaurant) {
+    const photograph = restaurant.photograph || "default";
+
+    return images(`./${photograph}.jpg`);
   }
 
   /**
@@ -151,13 +222,13 @@ export default class DBHelper {
    * @param {Object} map Google Maps' instance.
    * @return {Object} Google Maps' Marker instance.
    */
-  static mapMarkerForRestaurant(restaurant, map) {
+  mapMarkerForRestaurant(restaurant, map) {
     return new window.google.maps.Marker({
       position: restaurant.latlng,
       title: restaurant.name,
-      url: DBHelper.urlForRestaurant(restaurant),
+      url: this.urlForRestaurant(restaurant),
       map: map,
       animation: window.google.maps.Animation.DROP
     });
   }
-}
+}();
