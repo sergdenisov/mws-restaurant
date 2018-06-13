@@ -18,11 +18,13 @@
         </h1>
       </nav>
       <% if (restaurantPage) { %>
+      <nav aria-label="Breadcrumb">
         <ul class="breadcrumbs js-breadcrumbs">
           <li class="breadcrumbs__item">
             <a href="/" class="breadcrumbs__link">Home</a>
           </li>
         </ul>
+      </nav>
       <% } %>
     </header>
 
@@ -47,7 +49,7 @@
         <img src="https://maps.googleapis.com/maps/api/staticmap?center=40.722216,-73.987501&zoom=12&scale=2&size=640x400"
              class="main__static-map js-map-static"
              alt="Google Map of New York">
-        <div class="map js-map"></div>
+        <div class="map js-map" role="application"></div>
       </section>
       <% if (restaurantPage) { %>
         <section class="restaurant restaurant_detailed main__restaurant js-restaurant">
