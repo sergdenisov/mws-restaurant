@@ -9,9 +9,6 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="<%= css %>">
     <script defer src="<%= js %>" type="module"></script>
-    <script defer
-            src="<%= `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap` %>">
-    </script>
   </head>
   <body>
     <header>
@@ -47,6 +44,9 @@
         </nav>
       <% } %>
       <section class="main__map">
+        <img src="https://maps.googleapis.com/maps/api/staticmap?center=40.722216,-73.987501&zoom=12&scale=2&size=640x400"
+             class="main__static-map js-map-static"
+             alt="Google Map of New York">
         <div class="map js-map"></div>
       </section>
       <% if (restaurantPage) { %>
@@ -73,5 +73,9 @@
       <span class="footer__item">Copyright (c) 2018</span>
       <span class="footer__item">All Rights Reserved.</span>
     </footer>
+
+    <script src="<%= `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap` %>"
+            async defer>
+    </script>
   </body>
 </html>

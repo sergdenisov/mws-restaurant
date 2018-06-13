@@ -29,6 +29,7 @@ window.initMap = () => {
     center: loc,
     scrollwheel: false
   });
+  document.querySelector(".js-map-static").style = "display: none";
   updateRestaurants();
 };
 

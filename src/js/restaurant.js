@@ -18,6 +18,7 @@ window.initMap = () => {
       center: restaurant.latlng,
       scrollwheel: false
     });
+    document.querySelector(".js-map-static").style = "display: none";
     fillBreadcrumb(restaurant);
     DBHelper.mapMarkerForRestaurant(restaurant, map);
   });
