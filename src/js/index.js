@@ -29,6 +29,7 @@ window.initMap = () => {
     center: loc,
     scrollwheel: false
   });
+  document.querySelector(".js-map-static").style = "display: none";
   updateRestaurants();
 };
 
@@ -92,7 +93,7 @@ function createRestaurantHTML(restaurant) {
   const imageRequest = DBHelper.imageRequestForRestaurant(restaurant);
   image.src = imageRequest.images[imageRequest.images.length - 1].path;
   image.srcset = imageRequest.srcSet;
-  image.alt = "Restaurant image";
+  image.alt = `Image of the restaurant ${restaurant.name}`;
   image.className = "restaurant__image";
   li.append(image);
 

@@ -24,6 +24,14 @@
 
 .main__map {
   height: 400px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.main__static-map {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .main_splitted .main__map {

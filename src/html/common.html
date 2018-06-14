@@ -9,9 +9,6 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="<%= css %>">
     <script defer src="<%= js %>" type="module"></script>
-    <script defer
-            src="<%= `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap` %>">
-    </script>
   </head>
   <body>
     <header>
@@ -21,11 +18,13 @@
         </h1>
       </nav>
       <% if (restaurantPage) { %>
+      <nav aria-label="Breadcrumb">
         <ul class="breadcrumbs js-breadcrumbs">
           <li class="breadcrumbs__item">
             <a href="/" class="breadcrumbs__link">Home</a>
           </li>
         </ul>
+      </nav>
       <% } %>
     </header>
 
@@ -47,7 +46,10 @@
         </nav>
       <% } %>
       <section class="main__map">
-        <div class="map js-map"></div>
+        <img src="https://maps.googleapis.com/maps/api/staticmap?center=40.722216,-73.987501&zoom=12&scale=2&size=640x400&key=${apiKey}"
+             class="main__static-map js-map-static"
+             alt="Google Map of New York">
+        <div class="map js-map" role="application"></div>
       </section>
       <% if (restaurantPage) { %>
         <section class="restaurant restaurant_detailed main__restaurant js-restaurant">
@@ -73,5 +75,9 @@
       <span class="footer__item">Copyright (c) 2018</span>
       <span class="footer__item">All Rights Reserved.</span>
     </footer>
+
+    <script src="<%= `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap` %>"
+            async defer>
+    </script>
   </body>
 </html>
