@@ -98,6 +98,7 @@ function fillRestaurantHTML(restaurant) {
   const imageRequest = DBHelper.imageRequestForRestaurant(restaurant);
   image.src = imageRequest.images[imageRequest.images.length - 1].path;
   image.srcset = imageRequest.srcSet;
+  image.alt = `Image of the restaurant ${restaurant.name}`;
 
   const cuisine = container.querySelector(".js-restaurant-cuisine");
   cuisine.innerHTML = restaurant.cuisine_type;
