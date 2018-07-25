@@ -109,7 +109,9 @@ function fillRestaurantHTML(restaurant) {
   }
 
   // fill reviews
-  fillReviewsHTML(restaurant.reviews);
+  DBHelper.fetchRestaurantReviews(restaurant.id).then(reviews => {
+    fillReviewsHTML(reviews);
+  });
 }
 
 /**
@@ -147,8 +149,9 @@ function fillReviewsHTML(reviews) {
   title.innerHTML = "Reviews";
   container.appendChild(title);
 
-  if (!reviews) {
+  if (!reviews || reviews.length === 0) {
     const noReviews = document.createElement("p");
+    noReviews.className = "reviews__no-reviews";
     noReviews.innerHTML = "No reviews yet!";
     container.appendChild(noReviews);
     return;
@@ -170,6 +173,15 @@ function createReviewHTML(review) {
   const li = document.createElement("li");
   li.className = "reviews__item";
 
+  const remove = document.createElement("button");
+  remove.className = "reviews__remove link";
+  remove.type = "button";
+  remove.innerText = "✕";
+  remove.addEventListener("click", () => {
+    DBHelper.deleteReview(review.id).then(() => li.remove());
+  });
+  li.appendChild(remove);
+
   const name = document.createElement("h3");
   name.className = "reviews__name";
   name.innerHTML = review.name;
@@ -177,7 +189,7 @@ function createReviewHTML(review) {
 
   const date = document.createElement("time");
   date.className = "reviews__date";
-  date.innerHTML = review.date;
+  date.innerHTML = new Date(review.updatedAt).toLocaleDateString();
   li.appendChild(date);
 
   const rating = document.createElement("strong");

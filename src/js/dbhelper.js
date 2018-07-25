@@ -19,6 +19,7 @@ export default new class DBHelper {
 
     this.dbPromise = idb.open("mwsRestaurant", 1, function(upgradeDb) {
       upgradeDb.createObjectStore("restaurants", { keyPath: "id" });
+      upgradeDb.createObjectStore("reviews", { keyPath: "id" });
     });
   }
 
@@ -194,6 +195,105 @@ export default new class DBHelper {
       // Remove duplicates from cuisines
       return cuisines.filter((v, i) => cuisines.indexOf(v) === i);
     });
+  }
+
+  /**
+   * Fetch all reviews from network.
+   * @return {Promise} Promise object represents all reviews.
+   */
+  fetchReviewsFromNetwork() {
+    return fetch(`${BACKEND_URL}/reviews`)
+      .then(response => response.json())
+      .then(reviews => {
+        if (this.dbPromise) {
+          this.dbPromise.then(db => {
+            const store = db
+              .transaction("reviews", "readwrite")
+              .objectStore("reviews");
+
+            for (const review of reviews) {
+              store.put(review);
+            }
+          });
+        }
+
+        return reviews;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  /**
+   * Fetch all reviews from IndexedDB or network.
+   * @return {Promise} Promise object represents all reviews.
+   */
+  fetchReviews() {
+    if (this.fetchReviewsPromise) {
+      return this.fetchReviewsPromise;
+    }
+
+    if (!this.dbPromise) {
+      this.fetchReviewsPromise = this.fetchReviewsFromNetwork();
+      return this.fetchReviewsPromise;
+    }
+
+    this.fetchReviewsPromise = this.dbPromise
+      .then(db =>
+        db
+          .transaction("reviews")
+          .objectStore("reviews")
+          .getAll()
+      )
+      .then(reviews => {
+        if (reviews && reviews.length) {
+          return reviews;
+        }
+
+        return this.fetchReviewsFromNetwork().then(reviews => {
+          this.fetchReviewsPromise = null;
+          return reviews;
+        });
+      })
+      .catch(error => {
+        console.error(error);
+        this.fetchReviewsPromise = null;
+      });
+
+    return this.fetchReviewsPromise;
+  }
+
+  /**
+   * Fetch restaurant reviews by restaurant id.
+   * @param {number} id Restaurant id.
+   * @return {Promise} Promise object represents restaurant reviews.
+   */
+  fetchRestaurantReviews(id) {
+    // Fetch all reviews
+    return this.fetchReviews().then(reviews =>
+      reviews.filter(review => review.restaurant_id === id)
+    );
+  }
+
+  /**
+   * Delete review by id.
+   * @param {number} id Review id.
+   * @return {Promise} Promise object represents review deleting.
+   */
+  deleteReview(id) {
+    if (this.dbPromise) {
+      return this.dbPromise.then(db => {
+        const store = db
+          .transaction("reviews", "readwrite")
+          .objectStore("reviews");
+
+        store.delete(id);
+
+        return fetch(`${BACKEND_URL}/reviews/${id}`, { method: "DELETE" });
+      });
+    }
+
+    return fetch(`${BACKEND_URL}/reviews/${id}`, { method: "DELETE" });
   }
 
   /**
