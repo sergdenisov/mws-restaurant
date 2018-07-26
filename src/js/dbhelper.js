@@ -232,6 +232,7 @@ export default new class DBHelper {
           .objectStore("reviews")
           .getAll()
       )
+      .then(reviews => reviews.filter(review => review.restaurant_id === id))
       .catch(error => {
         console.error(error);
       });
