@@ -91,6 +91,23 @@ function fillRestaurantHTML(restaurant) {
   const name = container.querySelector(".js-restaurant-name");
   name.innerHTML = restaurant.name;
 
+  const favouriteLabel = document.createElement("label");
+  favouriteLabel.className = "restaurant__favorite-label";
+  favouriteLabel.title = "Add/remove to/from favorite";
+  const favouriteCheckbox = document.createElement("input");
+  favouriteCheckbox.className =
+    "restaurant__favorite-checkbox restaurant__favorite-checkbox_big";
+  favouriteCheckbox.type = "checkbox";
+  favouriteCheckbox.checked = String(restaurant.is_favorite) !== "false";
+  favouriteCheckbox.addEventListener("change", () => {
+    DBHelper.toggleRestaurantFavorite(
+      restaurant.id,
+      String(favouriteCheckbox.checked) !== "false"
+    );
+  });
+  favouriteLabel.append(favouriteCheckbox);
+  name.prepend(favouriteLabel);
+
   const address = container.querySelector(".js-restaurant-address");
   address.innerHTML = restaurant.address;
 

@@ -314,6 +314,44 @@ export default new class DBHelper {
   }
 
   /**
+   * Toggle restaurant favorite.
+   * @param {number} id Restaurant id.
+   * @param {boolean} isFavorite Flag if restaurant is favorite.
+   * @return {Promise} Promise object represents toggling of restaurant favorite.
+   */
+  toggleRestaurantFavorite(id, isFavorite) {
+    if (this.dbPromise) {
+      return this.dbPromise.then(db => {
+        const store = db
+          .transaction("restaurants", "readwrite")
+          .objectStore("restaurants");
+
+        store.iterateCursor(cursor => {
+          if (!cursor) {
+            return;
+          }
+
+          if (cursor.value.id === id) {
+            return cursor.update({ ...cursor.value, is_favorite: isFavorite });
+          }
+
+          return cursor.continue();
+        });
+
+        return fetch(
+          `${BACKEND_URL}/restaurants/${id}/?is_favorite=${isFavorite}`,
+          { method: "PUT" }
+        ).then(response => response.json());
+      });
+    }
+
+    return fetch(
+      `${BACKEND_URL}/restaurants/${id}/?is_favorite=${isFavorite}`,
+      { method: "PUT" }
+    ).then(response => response.json());
+  }
+
+  /**
    * Restaurant page URL.
    * @param {Object} restaurant Restaurant details.
    * @return {string} Restaurant URL.

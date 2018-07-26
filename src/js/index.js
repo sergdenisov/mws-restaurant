@@ -102,6 +102,22 @@ function createRestaurantHTML(restaurant) {
   name.innerHTML = restaurant.name;
   li.append(name);
 
+  const favouriteLabel = document.createElement("label");
+  favouriteLabel.className = "restaurant__favorite-label";
+  favouriteLabel.title = "Add/remove to/from favorite";
+  const favouriteCheckbox = document.createElement("input");
+  favouriteCheckbox.className = "restaurant__favorite-checkbox";
+  favouriteCheckbox.type = "checkbox";
+  favouriteCheckbox.checked = String(restaurant.is_favorite) !== "false";
+  favouriteCheckbox.addEventListener("change", () => {
+    DBHelper.toggleRestaurantFavorite(
+      restaurant.id,
+      String(favouriteCheckbox.checked) !== "false"
+    );
+  });
+  favouriteLabel.append(favouriteCheckbox);
+  name.prepend(favouriteLabel);
+
   const neighborhood = document.createElement("p");
   neighborhood.className = "restaurant__address";
   neighborhood.innerHTML = restaurant.neighborhood;
