@@ -59,7 +59,7 @@ export default new class DBHelper {
       return this.fetchRestaurantsPromise;
     }
 
-    if (!this.dbPromise) {
+    if (!this.dbPromise || window.navigator.onLine) {
       this.fetchRestaurantsPromise = this.fetchRestaurantsFromNetwork();
       return this.fetchRestaurantsPromise;
     }
@@ -71,16 +71,6 @@ export default new class DBHelper {
           .objectStore("restaurants")
           .getAll()
       )
-      .then(restaurants => {
-        if (restaurants && restaurants.length) {
-          return restaurants;
-        }
-
-        return this.fetchRestaurantsFromNetwork().then(restaurants => {
-          this.fetchRestaurantsPromise = null;
-          return restaurants;
-        });
-      })
       .catch(error => {
         console.error(error);
         this.fetchRestaurantsPromise = null;
@@ -231,7 +221,7 @@ export default new class DBHelper {
    * @return {Promise} Promise object represents restaurant reviews.
    */
   fetchReviews(id) {
-    if (!this.dbPromise || self.navigator.onLine) {
+    if (!this.dbPromise || window.navigator.onLine) {
       return this.fetchReviewsFromNetwork(id);
     }
 
