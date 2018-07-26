@@ -145,18 +145,6 @@ function fillRestaurantHoursHTML(operatingHours) {
  */
 function fillReviewsHTML(reviews, restaurantId) {
   const container = document.querySelector(".js-reviews");
-  const title = document.createElement("h2");
-  title.className = "reviews__title";
-  title.innerHTML = "Reviews";
-  container.appendChild(title);
-
-  if (!reviews || reviews.length === 0) {
-    const noReviews = document.createElement("p");
-    noReviews.className = "reviews__no-reviews";
-    noReviews.innerHTML = "No reviews yet!";
-    container.appendChild(noReviews);
-    return;
-  }
 
   const form = container.querySelector(".js-reviews-form");
   form.addEventListener("submit", e => {
