@@ -247,18 +247,27 @@ export default new class DBHelper {
    * @return {Promise} Promise object represents review deleting.
    */
   deleteReview(id) {
+    const postponedFetch = {
+      url: `${BACKEND_URL}/reviews/${id}`,
+      options: { method: "DELETE" }
+    };
+
     if (this.dbPromise) {
       return this.dbPromise.then(db => {
-        db
-          .transaction("reviews", "readwrite")
-          .objectStore("reviews")
-          .delete(id);
+        const tx = db.transaction("reviews", "readwrite");
+        tx.objectStore("reviews").delete(id);
 
-        return fetch(`${BACKEND_URL}/reviews/${id}`, { method: "DELETE" });
+        if (window.navigator.onLine) {
+          fetch(postponedFetch.url, postponedFetch.options);
+        } else {
+          this.postponedActions.push(postponedFetch);
+        }
+
+        return tx.complete;
       });
     }
 
-    return fetch(`${BACKEND_URL}/reviews/${id}`, { method: "DELETE" });
+    return fetch(postponedFetch.url, postponedFetch.options);
   }
 
   /**
