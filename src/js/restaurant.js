@@ -12,6 +12,15 @@ const current = { restaurant: null };
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
+  const offline = document.querySelector(".js-offline");
+  window.setInterval(() => {
+    if (window.navigator.onLine) {
+      offline.style = "display: none";
+    } else {
+      offline.style = "";
+    }
+  }, 1000);
+
   fetchRestaurantFromURL().then(restaurant => {
     const map = new window.google.maps.Map(document.querySelector(".js-map"), {
       zoom: 16,

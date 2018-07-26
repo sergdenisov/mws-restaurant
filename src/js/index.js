@@ -14,6 +14,15 @@ const current = { map: null, markers: [] };
 document.addEventListener("DOMContentLoaded", () => {
   fetchNeighborhoods();
   fetchCuisines();
+
+  const offline = document.querySelector(".js-offline");
+  window.setInterval(() => {
+    if (window.navigator.onLine) {
+      offline.style = "display: none";
+    } else {
+      offline.style = "";
+    }
+  }, 1000);
 });
 
 /**
