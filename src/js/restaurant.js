@@ -94,6 +94,7 @@ function fillRestaurantHTML(restaurant) {
   const favouriteLabel = document.createElement("label");
   favouriteLabel.className = "restaurant__favorite-label";
   favouriteLabel.title = "Add/remove to/from favorite";
+  favouriteLabel.tabIndex = 0;
   const favouriteCheckbox = document.createElement("input");
   favouriteCheckbox.className =
     "restaurant__favorite-checkbox restaurant__favorite-checkbox_big";
