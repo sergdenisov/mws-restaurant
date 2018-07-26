@@ -1,4 +1,5 @@
 import idb from "idb";
+import "babel-polyfill";
 
 const images = require.context("../images", false, /\.jpg$/);
 const BACKEND_URL = "http://localhost:1337";
@@ -21,6 +22,8 @@ export default new class DBHelper {
       upgradeDb.createObjectStore("restaurants", { keyPath: "id" });
       upgradeDb.createObjectStore("reviews", { keyPath: "id" });
     });
+
+    this.postponedActions = [];
   }
 
   /**
@@ -320,11 +323,15 @@ export default new class DBHelper {
    * @return {Promise} Promise object represents toggling of restaurant favorite.
    */
   toggleRestaurantFavorite(id, isFavorite) {
+    const postponedFetch = {
+      url: `${BACKEND_URL}/restaurants/${id}/?is_favorite=${isFavorite}`,
+      options: { method: "PUT" }
+    };
+
     if (this.dbPromise) {
       return this.dbPromise.then(db => {
-        const store = db
-          .transaction("restaurants", "readwrite")
-          .objectStore("restaurants");
+        const tx = db.transaction("restaurants", "readwrite");
+        const store = tx.objectStore("restaurants");
 
         store.iterateCursor(cursor => {
           if (!cursor) {
@@ -338,17 +345,31 @@ export default new class DBHelper {
           return cursor.continue();
         });
 
-        return fetch(
-          `${BACKEND_URL}/restaurants/${id}/?is_favorite=${isFavorite}`,
-          { method: "PUT" }
-        ).then(response => response.json());
+        if (window.navigator.onLine) {
+          fetch(postponedFetch.url, postponedFetch.options);
+        } else {
+          this.postponedActions.push(postponedFetch);
+        }
+
+        return tx.complete;
       });
     }
 
-    return fetch(
-      `${BACKEND_URL}/restaurants/${id}/?is_favorite=${isFavorite}`,
-      { method: "PUT" }
-    ).then(response => response.json());
+    return fetch(postponedFetch.url, postponedFetch.options);
+  }
+
+  /**
+   * Check postponed actions.
+   */
+  async checkPostponedActions() {
+    if (this.postponedActions.length === 0) {
+      return;
+    }
+
+    while (this.postponedActions.length !== 0) {
+      const action = this.postponedActions.shift();
+      await fetch(action.url, action.options);
+    }
   }
 
   /**

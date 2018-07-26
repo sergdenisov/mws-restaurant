@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.setInterval(() => {
     if (window.navigator.onLine) {
       offline.style = "display: none";
+      DBHelper.checkPostponedActions();
     } else {
       offline.style = "";
     }

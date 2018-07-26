@@ -16,6 +16,7 @@ window.initMap = () => {
   window.setInterval(() => {
     if (window.navigator.onLine) {
       offline.style = "display: none";
+      DBHelper.checkPostponedActions();
     } else {
       offline.style = "";
     }
