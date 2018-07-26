@@ -196,7 +196,7 @@ export default new class DBHelper {
    * @return {Promise} Promise object represents restaurant reviews.
    */
   fetchReviewsFromNetwork(id) {
-    return fetch(`${BACKEND_URL}/reviews?restaurant_id=${id}`)
+    return fetch(`${BACKEND_URL}/reviews`)
       .then(response => response.json())
       .then(reviews => {
         if (this.dbPromise) {
@@ -211,7 +211,7 @@ export default new class DBHelper {
           });
         }
 
-        return reviews;
+        return reviews.filter(review => review.restaurant_id === id);
       })
       .catch(error => {
         console.error(error);
@@ -276,27 +276,34 @@ export default new class DBHelper {
    * @return {Promise} Promise object represents review posting.
    */
   postReview(review) {
+    const postponedFetch = {
+      url: `${BACKEND_URL}/reviews`,
+      options: { method: "POST", body: JSON.stringify(review) }
+    };
+
     if (this.dbPromise) {
       return this.dbPromise.then(db => {
-        const store = db
-          .transaction("reviews", "readwrite")
-          .objectStore("reviews");
+        const tx = db.transaction("reviews", "readwrite");
+        const store = tx.objectStore("reviews");
 
         store.getAll().then(reviews => {
-          store.put({ ...review, id: reviews[reviews.length - 1].id + 1 });
+          review.id = reviews[reviews.length - 1].id + 1;
+          store.put(review);
+
+          postponedFetch.options.body = JSON.stringify(review);
+
+          if (window.navigator.onLine) {
+            fetch(postponedFetch.url, postponedFetch.options);
+          } else {
+            this.postponedActions.push(postponedFetch);
+          }
         });
 
-        return fetch(`${BACKEND_URL}/reviews`, {
-          body: JSON.stringify(review),
-          method: "POST"
-        }).then(response => response.json());
+        return tx.complete;
       });
     }
 
-    return fetch(`${BACKEND_URL}/reviews`, {
-      body: JSON.stringify(review),
-      method: "POST"
-    }).then(response => response.json());
+    return fetch(postponedFetch.url, postponedFetch.options);
   }
 
   /**

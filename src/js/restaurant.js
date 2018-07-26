@@ -177,14 +177,15 @@ function fillReviewsHTML(reviews, restaurantId) {
   const form = container.querySelector(".js-reviews-form");
   form.addEventListener("submit", e => {
     e.preventDefault();
-    DBHelper.postReview({
+    const review = {
       restaurant_id: parseInt(restaurantId, 10),
       name: form.querySelector(".js-reviews-form-name").value,
       rating: parseInt(form.querySelector(".js-reviews-form-rating").value, 10),
       comments: form.querySelector(".js-reviews-form-comments").value,
       createdAt: Date.now(),
       updatedAt: Date.now()
-    }).then(review => {
+    };
+    DBHelper.postReview(review).then(() => {
       ul.appendChild(createReviewHTML(review));
       form.reset();
     });
