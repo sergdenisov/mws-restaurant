@@ -60,7 +60,27 @@
           <table class="restaurant-hours js-restaurant-hours"></table>
         </section>
         <section class="reviews main__reviews js-reviews">
-          <ul class="reviews__list js-reviews-list"></ul>
+          <ul class="reviews__list js-reviews-list">
+            <li class="reviews__item">
+              <form class="js-reviews-form" name="reviews">
+                <h3 class="reviews__name js-reviews-form-title">Add review</h3>
+                <label class="reviews__label">
+                  Name
+                  <input class="reviews__input js-reviews-form-name" name="name" type="text">
+                </label>
+                <label class="reviews__label">
+                  Rating
+                  <input class="reviews__input js-reviews-form-rating" name="rating" type="number" min="1" max="5">
+                </label>
+                <label class="reviews__label">
+                  Comments
+                  <textarea class="reviews__input js-reviews-form-comments" name="comments"></textarea>
+                </label>
+                <button class="reviews__button" type="submit">Submit</button>
+                <button class="reviews__button js-reviews-form-cancel" type="button">Cancel</button>
+              </form>
+            </li>
+          </ul>
         </section>
       <% } else { %>
         <section class="filters-results">

@@ -198,11 +198,12 @@ export default new class DBHelper {
   }
 
   /**
-   * Fetch all reviews from network.
-   * @return {Promise} Promise object represents all reviews.
+   * Fetch restaurant reviews from network.
+   * @param {number} id Restaurant id.
+   * @return {Promise} Promise object represents restaurant reviews.
    */
-  fetchReviewsFromNetwork() {
-    return fetch(`${BACKEND_URL}/reviews`)
+  fetchReviewsFromNetwork(id) {
+    return fetch(`${BACKEND_URL}/reviews?restaurant_id=${id}`)
       .then(response => response.json())
       .then(reviews => {
         if (this.dbPromise) {
@@ -225,54 +226,25 @@ export default new class DBHelper {
   }
 
   /**
-   * Fetch all reviews from IndexedDB or network.
-   * @return {Promise} Promise object represents all reviews.
+   * Fetch restaurant reviews from IndexedDB or network.
+   * @param {number} id Restaurant id.
+   * @return {Promise} Promise object represents restaurant reviews.
    */
-  fetchReviews() {
-    if (this.fetchReviewsPromise) {
-      return this.fetchReviewsPromise;
+  fetchReviews(id) {
+    if (!this.dbPromise || self.navigator.onLine) {
+      return this.fetchReviewsFromNetwork(id);
     }
 
-    if (!this.dbPromise) {
-      this.fetchReviewsPromise = this.fetchReviewsFromNetwork();
-      return this.fetchReviewsPromise;
-    }
-
-    this.fetchReviewsPromise = this.dbPromise
+    return this.dbPromise
       .then(db =>
         db
           .transaction("reviews")
           .objectStore("reviews")
           .getAll()
       )
-      .then(reviews => {
-        if (reviews && reviews.length) {
-          return reviews;
-        }
-
-        return this.fetchReviewsFromNetwork().then(reviews => {
-          this.fetchReviewsPromise = null;
-          return reviews;
-        });
-      })
       .catch(error => {
         console.error(error);
-        this.fetchReviewsPromise = null;
       });
-
-    return this.fetchReviewsPromise;
-  }
-
-  /**
-   * Fetch restaurant reviews by restaurant id.
-   * @param {number} id Restaurant id.
-   * @return {Promise} Promise object represents restaurant reviews.
-   */
-  fetchRestaurantReviews(id) {
-    // Fetch all reviews
-    return this.fetchReviews().then(reviews =>
-      reviews.filter(review => review.restaurant_id === id)
-    );
   }
 
   /**
@@ -283,17 +255,45 @@ export default new class DBHelper {
   deleteReview(id) {
     if (this.dbPromise) {
       return this.dbPromise.then(db => {
-        const store = db
+        db
           .transaction("reviews", "readwrite")
-          .objectStore("reviews");
-
-        store.delete(id);
+          .objectStore("reviews")
+          .delete(id);
 
         return fetch(`${BACKEND_URL}/reviews/${id}`, { method: "DELETE" });
       });
     }
 
     return fetch(`${BACKEND_URL}/reviews/${id}`, { method: "DELETE" });
+  }
+
+  /**
+   * Post review.
+   * @param {Object} review Restaurant review.
+   * @return {Promise} Promise object represents review posting.
+   */
+  postReview(review) {
+    if (this.dbPromise) {
+      return this.dbPromise.then(db => {
+        const store = db
+          .transaction("reviews", "readwrite")
+          .objectStore("reviews");
+
+        store.getAll().then(reviews => {
+          store.put({ ...review, id: reviews[reviews.length - 1].id + 1 });
+        });
+
+        return fetch(`${BACKEND_URL}/reviews`, {
+          body: JSON.stringify(review),
+          method: "POST"
+        }).then(response => response.json());
+      });
+    }
+
+    return fetch(`${BACKEND_URL}/reviews`, {
+      body: JSON.stringify(review),
+      method: "POST"
+    }).then(response => response.json());
   }
 
   /**

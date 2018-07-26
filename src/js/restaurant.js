@@ -109,8 +109,8 @@ function fillRestaurantHTML(restaurant) {
   }
 
   // fill reviews
-  DBHelper.fetchRestaurantReviews(restaurant.id).then(reviews => {
-    fillReviewsHTML(reviews);
+  DBHelper.fetchReviews(restaurant.id).then(reviews => {
+    fillReviewsHTML(reviews, restaurant.id);
   });
 }
 
@@ -141,8 +141,9 @@ function fillRestaurantHoursHTML(operatingHours) {
 /**
  * Create all reviews HTML and add them to the web page.
  * @param {Object} reviews Restaurant reviews.
+ * @param {number} restaurantId Restaurant id.
  */
-function fillReviewsHTML(reviews) {
+function fillReviewsHTML(reviews, restaurantId) {
   const container = document.querySelector(".js-reviews");
   const title = document.createElement("h2");
   title.className = "reviews__title";
@@ -156,6 +157,29 @@ function fillReviewsHTML(reviews) {
     container.appendChild(noReviews);
     return;
   }
+
+  const form = container.querySelector(".js-reviews-form");
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const review = {
+      restaurant_id: parseInt(restaurantId, 10),
+      name: form.querySelector(".js-reviews-form-name").value,
+      rating: parseInt(form.querySelector(".js-reviews-form-rating").value, 10),
+      comments: form.querySelector(".js-reviews-form-comments").value,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+    DBHelper.postReview(review).then(review => {
+      ul.appendChild(createReviewHTML(review));
+      form.reset();
+    });
+  });
+
+  form
+    .querySelector(".js-reviews-form-cancel")
+    .addEventListener("click", () => {
+      form.reset();
+    });
 
   const ul = document.querySelector(".js-reviews-list");
   reviews.forEach(review => {

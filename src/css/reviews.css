@@ -85,3 +85,20 @@
   text-align: center;
   font-size: 20px;
 }
+
+.reviews__label {
+  display: block;
+  margin-bottom: calc(var(--gap-vertical) / 2);
+}
+
+.reviews__input {
+  margin-top: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  font-size: 14px;
+}
+
+.reviews__button {
+  font-size: 16px;
+}
