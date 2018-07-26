@@ -277,7 +277,7 @@ function createReviewEditHTML(review, element) {
 
   form.addEventListener("submit", e => {
     e.preventDefault();
-    DBHelper.editReview({
+    const editedReview = {
       id: parseInt(review.id, 10),
       restaurant_id: parseInt(review.restaurant_id, 10),
       name: name.value,
@@ -285,8 +285,12 @@ function createReviewEditHTML(review, element) {
       comments: comments.value,
       createdAt: Date.now(),
       updatedAt: Date.now()
-    }).then(review => {
-      formItem.parentNode.insertBefore(createReviewHTML(review), formItem);
+    };
+    DBHelper.editReview(editedReview).then(() => {
+      formItem.parentNode.insertBefore(
+        createReviewHTML(editedReview),
+        formItem
+      );
       formItem.remove();
     });
   });

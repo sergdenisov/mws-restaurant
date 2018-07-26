@@ -312,24 +312,27 @@ export default new class DBHelper {
    * @return {Promise} Promise object represents review editing.
    */
   editReview(review) {
+    const postponedFetch = {
+      url: `${BACKEND_URL}/reviews/${review.id}`,
+      options: { method: "PUT", body: JSON.stringify(review) }
+    };
+
     if (this.dbPromise) {
       return this.dbPromise.then(db => {
-        db
-          .transaction("reviews", "readwrite")
-          .objectStore("reviews")
-          .put(review);
+        const tx = db.transaction("reviews", "readwrite");
+        tx.objectStore("reviews").put(review);
 
-        return fetch(`${BACKEND_URL}/reviews/${review.id}`, {
-          body: JSON.stringify(review),
-          method: "PUT"
-        }).then(response => response.json());
+        if (window.navigator.onLine) {
+          fetch(postponedFetch.url, postponedFetch.options);
+        } else {
+          this.postponedActions.push(postponedFetch);
+        }
+
+        return tx.complete;
       });
     }
 
-    return fetch(`${BACKEND_URL}/reviews/${review.id}`, {
-      body: JSON.stringify(review),
-      method: "PUT"
-    }).then(response => response.json());
+    return fetch(postponedFetch.url, postponedFetch.options);
   }
 
   /**
