@@ -287,6 +287,32 @@ export default new class DBHelper {
   }
 
   /**
+   * Edit review.
+   * @param {Object} review Restaurant review.
+   * @return {Promise} Promise object represents review editing.
+   */
+  editReview(review) {
+    if (this.dbPromise) {
+      return this.dbPromise.then(db => {
+        db
+          .transaction("reviews", "readwrite")
+          .objectStore("reviews")
+          .put(review);
+
+        return fetch(`${BACKEND_URL}/reviews/${review.id}`, {
+          body: JSON.stringify(review),
+          method: "PUT"
+        }).then(response => response.json());
+      });
+    }
+
+    return fetch(`${BACKEND_URL}/reviews/${review.id}`, {
+      body: JSON.stringify(review),
+      method: "PUT"
+    }).then(response => response.json());
+  }
+
+  /**
    * Restaurant page URL.
    * @param {Object} restaurant Restaurant details.
    * @return {string} Restaurant URL.

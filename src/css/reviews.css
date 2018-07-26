@@ -59,6 +59,16 @@
   color: var(--color-red);
 }
 
+.reviews__edit {
+  position: absolute;
+  top: 60px;
+  right: 8px;
+  border: 0;
+  font-size: 25px;
+  padding: 7px 12px;
+  color: var(--color-maroon);
+}
+
 .reviews__name {
   margin: 0 0 calc(var(--gap-vertical) / 2) 0;
   font-size: 18px;

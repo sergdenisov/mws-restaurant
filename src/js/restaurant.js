@@ -149,15 +149,14 @@ function fillReviewsHTML(reviews, restaurantId) {
   const form = container.querySelector(".js-reviews-form");
   form.addEventListener("submit", e => {
     e.preventDefault();
-    const review = {
+    DBHelper.postReview({
       restaurant_id: parseInt(restaurantId, 10),
       name: form.querySelector(".js-reviews-form-name").value,
       rating: parseInt(form.querySelector(".js-reviews-form-rating").value, 10),
       comments: form.querySelector(".js-reviews-form-comments").value,
       createdAt: Date.now(),
       updatedAt: Date.now()
-    };
-    DBHelper.postReview(review).then(review => {
+    }).then(review => {
       ul.appendChild(createReviewHTML(review));
       form.reset();
     });
@@ -189,10 +188,19 @@ function createReviewHTML(review) {
   remove.className = "reviews__remove link";
   remove.type = "button";
   remove.innerText = "✕";
+  remove.title = "Delete review";
   remove.addEventListener("click", () => {
     DBHelper.deleteReview(review.id).then(() => li.remove());
   });
   li.appendChild(remove);
+
+  const edit = document.createElement("button");
+  edit.className = "reviews__edit link";
+  edit.type = "button";
+  edit.innerText = "✎";
+  edit.title = "Edit review";
+  edit.addEventListener("click", () => createReviewEditHTML(review, li));
+  li.appendChild(edit);
 
   const name = document.createElement("h3");
   name.className = "reviews__name";
@@ -215,4 +223,49 @@ function createReviewHTML(review) {
   li.appendChild(comments);
 
   return li;
+}
+
+/**
+ * Create review edit HTML and add it to the web page.
+ * @param {Object} review Restaurant review.
+ * @param {Object} element Restaurant review HTML element.
+ */
+function createReviewEditHTML(review, element) {
+  const formItem = document
+    .querySelector(".js-reviews-form-item")
+    .cloneNode(true);
+  const form = formItem.querySelector(".js-reviews-form");
+
+  form.querySelector(".js-reviews-form-title").innerHTML = "Edit review";
+  const name = form.querySelector(".js-reviews-form-name");
+  name.value = review.name;
+  const rating = form.querySelector(".js-reviews-form-rating");
+  rating.value = review.rating;
+  const comments = form.querySelector(".js-reviews-form-comments");
+  comments.value = review.comments;
+  element.parentNode.insertBefore(formItem, element);
+  element.remove();
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    DBHelper.editReview({
+      id: parseInt(review.id, 10),
+      restaurant_id: parseInt(review.restaurant_id, 10),
+      name: name.value,
+      rating: parseInt(rating.value, 10),
+      comments: comments.value,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    }).then(review => {
+      formItem.parentNode.insertBefore(createReviewHTML(review), formItem);
+      formItem.remove();
+    });
+  });
+
+  form
+    .querySelector(".js-reviews-form-cancel")
+    .addEventListener("click", () => {
+      formItem.parentNode.insertBefore(createReviewHTML(review), formItem);
+      formItem.remove();
+    });
 }
