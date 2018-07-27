@@ -19,3 +19,18 @@
   letter-spacing: 10px;
   text-transform: uppercase;
 }
+
+.nav__offline {
+  width: 100%;
+  color: var(--color-red);
+  font-size: 16px;
+  text-align: center;
+  position: fixed;
+  background-color: var(--color-black);
+  padding: 20px;
+  z-index: 1;
+  margin: 0;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+}

@@ -7,12 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title><%= title %></title>
     <link rel="manifest" href="/manifest.json">
-    <link rel="stylesheet" href="<%= css %>">
-    <script defer src="<%= js %>" type="module"></script>
   </head>
   <body>
     <header>
       <nav class="nav">
+        <p class="nav__offline js-offline" style="display: none">
+          The application is offline. All the changes will be synchronized when the connection appears.
+        </p>
         <h1 class="nav__title">
           <a href="/" class="nav__link">Restaurant Reviews</a>
         </h1>
@@ -45,22 +46,37 @@
           </label>
         </nav>
       <% } %>
-      <section class="main__map">
-        <img src="https://maps.googleapis.com/maps/api/staticmap?center=40.722216,-73.987501&zoom=12&scale=2&size=640x400&key=${apiKey}"
-             class="main__static-map js-map-static"
-             alt="Google Map of New York">
-        <div class="map js-map" role="application"></div>
-      </section>
       <% if (restaurantPage) { %>
         <section class="restaurant restaurant_detailed main__restaurant js-restaurant">
           <h2 class="restaurant__name js-restaurant-name"></h2>
-          <img src="/" alt="Restaurant image" class="restaurant__image js-restaurant-image">
+          <img src="/" alt="Restaurant image" class="restaurant__image js-restaurant-image js-lazy">
           <h3 class="restaurant__cuisine js-restaurant-cuisine"></h3>
           <p class="restaurant__address js-restaurant-address"></p>
           <table class="restaurant-hours js-restaurant-hours"></table>
         </section>
         <section class="reviews main__reviews js-reviews">
-          <ul class="reviews__list js-reviews-list"></ul>
+          <h2 class="reviews__title">Reviews</h2>
+          <ul class="reviews__list js-reviews-list">
+            <li class="reviews__item js-reviews-form-item">
+              <form class="js-reviews-form" name="reviews">
+                <h3 class="reviews__name js-reviews-form-title">Add review</h3>
+                <label class="reviews__label">
+                  Name
+                  <input class="reviews__input js-reviews-form-name" name="name" type="text">
+                </label>
+                <label class="reviews__label">
+                  Rating
+                  <input class="reviews__input js-reviews-form-rating" name="rating" type="number" min="1" max="5">
+                </label>
+                <label class="reviews__label">
+                  Comments
+                  <textarea class="reviews__input js-reviews-form-comments" name="comments"></textarea>
+                </label>
+                <button class="reviews__button" type="submit">Submit</button>
+                <button class="reviews__button js-reviews-form-cancel" type="button">Cancel</button>
+              </form>
+            </li>
+          </ul>
         </section>
       <% } else { %>
         <section class="filters-results">
@@ -68,6 +84,13 @@
           <ul class="filters-results__list js-restaurants"></ul>
         </section>
       <% } %>
+      <section class="main__map">
+        <button class="main__show-map js-show-map" type="button">Show on map</button>
+        <img src="https://maps.googleapis.com/maps/api/staticmap?center=40.722216,-73.987501&zoom=12&scale=2&size=640x400&key=${apiKey}"
+             class="main__static-map js-map-static"
+             alt="Google Map of New York">
+        <div class="map js-map" role="application"></div>
+      </section>
     </main>
 
     <footer class="footer">
@@ -75,9 +98,5 @@
       <span class="footer__item">Copyright (c) 2018</span>
       <span class="footer__item">All Rights Reserved.</span>
     </footer>
-
-    <script src="<%= `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap` %>"
-            async defer>
-    </script>
   </body>
 </html>

@@ -1,7 +1,9 @@
 import idb from "idb";
+import "babel-polyfill";
 
 const images = require.context("../images", false, /\.jpg$/);
 const BACKEND_URL = "http://localhost:1337";
+const API_KEY = "AIzaSyCRnfUWfANw0glEAZwOq4vauiP5iZLAXa0";
 
 /**
  * Common database helper functions.
@@ -19,7 +21,10 @@ export default new class DBHelper {
 
     this.dbPromise = idb.open("mwsRestaurant", 1, function(upgradeDb) {
       upgradeDb.createObjectStore("restaurants", { keyPath: "id" });
+      upgradeDb.createObjectStore("reviews", { keyPath: "id" });
     });
+
+    this.postponedActions = [];
   }
 
   /**
@@ -58,7 +63,7 @@ export default new class DBHelper {
       return this.fetchRestaurantsPromise;
     }
 
-    if (!this.dbPromise) {
+    if (!this.dbPromise || window.navigator.onLine) {
       this.fetchRestaurantsPromise = this.fetchRestaurantsFromNetwork();
       return this.fetchRestaurantsPromise;
     }
@@ -70,16 +75,6 @@ export default new class DBHelper {
           .objectStore("restaurants")
           .getAll()
       )
-      .then(restaurants => {
-        if (restaurants && restaurants.length) {
-          return restaurants;
-        }
-
-        return this.fetchRestaurantsFromNetwork().then(restaurants => {
-          this.fetchRestaurantsPromise = null;
-          return restaurants;
-        });
-      })
       .catch(error => {
         console.error(error);
         this.fetchRestaurantsPromise = null;
@@ -197,6 +192,207 @@ export default new class DBHelper {
   }
 
   /**
+   * Fetch restaurant reviews from network.
+   * @param {number} id Restaurant id.
+   * @return {Promise} Promise object represents restaurant reviews.
+   */
+  fetchReviewsFromNetwork(id) {
+    return fetch(`${BACKEND_URL}/reviews`)
+      .then(response => response.json())
+      .then(reviews => {
+        if (this.dbPromise) {
+          this.dbPromise.then(db => {
+            const store = db
+              .transaction("reviews", "readwrite")
+              .objectStore("reviews");
+
+            for (const review of reviews) {
+              store.put(review);
+            }
+          });
+        }
+
+        return reviews.filter(review => review.restaurant_id === id);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  /**
+   * Fetch restaurant reviews from IndexedDB or network.
+   * @param {number} id Restaurant id.
+   * @return {Promise} Promise object represents restaurant reviews.
+   */
+  fetchReviews(id) {
+    if (!this.dbPromise || window.navigator.onLine) {
+      return this.fetchReviewsFromNetwork(id);
+    }
+
+    return this.dbPromise
+      .then(db =>
+        db
+          .transaction("reviews")
+          .objectStore("reviews")
+          .getAll()
+      )
+      .then(reviews => reviews.filter(review => review.restaurant_id === id))
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  /**
+   * Delete review by id.
+   * @param {number} id Review id.
+   * @return {Promise} Promise object represents review deleting.
+   */
+  deleteReview(id) {
+    const postponedFetch = {
+      url: `${BACKEND_URL}/reviews/${id}`,
+      options: { method: "DELETE" }
+    };
+
+    if (this.dbPromise) {
+      return this.dbPromise.then(db => {
+        const tx = db.transaction("reviews", "readwrite");
+        tx.objectStore("reviews").delete(id);
+
+        if (window.navigator.onLine) {
+          fetch(postponedFetch.url, postponedFetch.options);
+        } else {
+          this.postponedActions.push(postponedFetch);
+        }
+
+        return tx.complete;
+      });
+    }
+
+    return fetch(postponedFetch.url, postponedFetch.options);
+  }
+
+  /**
+   * Post review.
+   * @param {Object} review Restaurant review.
+   * @return {Promise} Promise object represents review posting.
+   */
+  postReview(review) {
+    const postponedFetch = {
+      url: `${BACKEND_URL}/reviews`,
+      options: { method: "POST", body: JSON.stringify(review) }
+    };
+
+    if (this.dbPromise) {
+      return this.dbPromise.then(db => {
+        const tx = db.transaction("reviews", "readwrite");
+        const store = tx.objectStore("reviews");
+
+        store.getAll().then(reviews => {
+          review.id = reviews[reviews.length - 1].id + 1;
+          store.put(review);
+
+          postponedFetch.options.body = JSON.stringify(review);
+
+          if (window.navigator.onLine) {
+            fetch(postponedFetch.url, postponedFetch.options);
+          } else {
+            this.postponedActions.push(postponedFetch);
+          }
+        });
+
+        return tx.complete;
+      });
+    }
+
+    return fetch(postponedFetch.url, postponedFetch.options);
+  }
+
+  /**
+   * Edit review.
+   * @param {Object} review Restaurant review.
+   * @return {Promise} Promise object represents review editing.
+   */
+  editReview(review) {
+    const postponedFetch = {
+      url: `${BACKEND_URL}/reviews/${review.id}`,
+      options: { method: "PUT", body: JSON.stringify(review) }
+    };
+
+    if (this.dbPromise) {
+      return this.dbPromise.then(db => {
+        const tx = db.transaction("reviews", "readwrite");
+        tx.objectStore("reviews").put(review);
+
+        if (window.navigator.onLine) {
+          fetch(postponedFetch.url, postponedFetch.options);
+        } else {
+          this.postponedActions.push(postponedFetch);
+        }
+
+        return tx.complete;
+      });
+    }
+
+    return fetch(postponedFetch.url, postponedFetch.options);
+  }
+
+  /**
+   * Toggle restaurant favorite.
+   * @param {number} id Restaurant id.
+   * @param {boolean} isFavorite Flag if restaurant is favorite.
+   * @return {Promise} Promise object represents toggling of restaurant favorite.
+   */
+  toggleRestaurantFavorite(id, isFavorite) {
+    const postponedFetch = {
+      url: `${BACKEND_URL}/restaurants/${id}/?is_favorite=${isFavorite}`,
+      options: { method: "PUT" }
+    };
+
+    if (this.dbPromise) {
+      return this.dbPromise.then(db => {
+        const tx = db.transaction("restaurants", "readwrite");
+        const store = tx.objectStore("restaurants");
+
+        store.iterateCursor(cursor => {
+          if (!cursor) {
+            return;
+          }
+
+          if (cursor.value.id === id) {
+            return cursor.update({ ...cursor.value, is_favorite: isFavorite });
+          }
+
+          return cursor.continue();
+        });
+
+        if (window.navigator.onLine) {
+          fetch(postponedFetch.url, postponedFetch.options);
+        } else {
+          this.postponedActions.push(postponedFetch);
+        }
+
+        return tx.complete;
+      });
+    }
+
+    return fetch(postponedFetch.url, postponedFetch.options);
+  }
+
+  /**
+   * Check postponed actions.
+   */
+  async checkPostponedActions() {
+    if (this.postponedActions.length === 0) {
+      return;
+    }
+
+    while (this.postponedActions.length !== 0) {
+      const action = this.postponedActions.shift();
+      await fetch(action.url, action.options);
+    }
+  }
+
+  /**
    * Restaurant page URL.
    * @param {Object} restaurant Restaurant details.
    * @return {string} Restaurant URL.
@@ -230,5 +426,15 @@ export default new class DBHelper {
       map: map,
       animation: window.google.maps.Animation.DROP
     });
+  }
+
+  /**
+   * Lazy load Google Maps
+   */
+  lazyLoadGoogleMaps() {
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&callback=initMap`;
+    script.defer = true;
+    document.body.append(script);
   }
 }();

@@ -1,6 +1,7 @@
 import DBHelper from "../js/dbhelper";
 import "../css/all.css";
 import runtime from "serviceworker-webpack-plugin/lib/runtime";
+import LazyLoad from "vanilla-lazyload";
 
 if ("serviceWorker" in navigator) {
   runtime.register();
@@ -14,6 +15,23 @@ const current = { map: null, markers: [] };
 document.addEventListener("DOMContentLoaded", () => {
   fetchNeighborhoods();
   fetchCuisines();
+  updateRestaurants();
+
+  const offline = document.querySelector(".js-offline");
+  window.setInterval(() => {
+    if (window.navigator.onLine) {
+      offline.style = "display: none";
+      DBHelper.checkPostponedActions();
+    } else {
+      offline.style = "";
+    }
+  }, 1000);
+
+  const showMap = document.querySelector(".js-show-map");
+  showMap.addEventListener("click", () => {
+    showMap.style = "display: none";
+    DBHelper.lazyLoadGoogleMaps();
+  });
 });
 
 /**
@@ -77,6 +95,7 @@ function fillRestaurantsHTML(restaurants) {
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
   });
+  new LazyLoad({ elements_selector: ".js-lazy" });
   addMarkersToMap(restaurants);
 }
 
@@ -91,16 +110,33 @@ function createRestaurantHTML(restaurant) {
 
   const image = document.createElement("img");
   const imageRequest = DBHelper.imageRequestForRestaurant(restaurant);
-  image.src = imageRequest.images[imageRequest.images.length - 1].path;
-  image.srcset = imageRequest.srcSet;
+  image.dataset.src = imageRequest.images[imageRequest.images.length - 1].path;
+  image.dataset.srcset = imageRequest.srcSet;
   image.alt = `Image of the restaurant ${restaurant.name}`;
-  image.className = "restaurant__image";
+  image.className = "restaurant__image js-lazy";
   li.append(image);
 
   const name = document.createElement("h2");
   name.className = "restaurant__name";
   name.innerHTML = restaurant.name;
   li.append(name);
+
+  const favouriteLabel = document.createElement("label");
+  favouriteLabel.className = "restaurant__favorite-label";
+  favouriteLabel.title = "Add/remove to/from favorite";
+  favouriteLabel.tabIndex = 0;
+  const favouriteCheckbox = document.createElement("input");
+  favouriteCheckbox.className = "restaurant__favorite-checkbox";
+  favouriteCheckbox.type = "checkbox";
+  favouriteCheckbox.checked = String(restaurant.is_favorite) !== "false";
+  favouriteCheckbox.addEventListener("change", () => {
+    DBHelper.toggleRestaurantFavorite(
+      restaurant.id,
+      String(favouriteCheckbox.checked) !== "false"
+    );
+  });
+  favouriteLabel.append(favouriteCheckbox);
+  name.prepend(favouriteLabel);
 
   const neighborhood = document.createElement("p");
   neighborhood.className = "restaurant__address";
@@ -126,6 +162,10 @@ function createRestaurantHTML(restaurant) {
  * @param {Object[]} restaurants Selected restaurants.
  */
 function addMarkersToMap(restaurants) {
+  if (!current.map) {
+    return;
+  }
+
   restaurants.forEach(restaurant => {
     // Add marker to the map
     const marker = DBHelper.mapMarkerForRestaurant(restaurant, current.map);

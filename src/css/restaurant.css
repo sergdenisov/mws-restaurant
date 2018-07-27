@@ -67,3 +67,34 @@
   text-align: center;
   text-transform: uppercase;
 }
+
+.restaurant__favorite-label {
+  position: relative;
+  padding: 15px;
+  margin-left: -15px;
+}
+
+.restaurant__favorite-checkbox {
+  visibility: hidden;
+}
+
+.restaurant__favorite-checkbox::before {
+  content: "★";
+  visibility: visible;
+  font-size: 30px;
+  position: absolute;
+  top: 7px;
+  left: 11px;
+  color: var(--color-gray-dark);
+  cursor: pointer;
+}
+
+.restaurant__favorite-checkbox:checked::before {
+  color: var(--color-red);
+}
+
+.restaurant__favorite-checkbox_big::before {
+  font-size: 40px;
+  top: 5px;
+  left: 7px;
+}
