@@ -45,6 +45,7 @@
     "idb": "^2.1.2",
     "jimp": "^0.2.28",
     "lint-staged": "^7.0.5",
+    "optimize-css-assets-webpack-plugin": "^5.0.0",
     "postcss-custom-properties": "^7.0.0",
     "postcss-import": "^11.1.0",
     "postcss-loader": "^2.1.4",
