@@ -3,6 +3,7 @@ import "babel-polyfill";
 
 const images = require.context("../images", false, /\.jpg$/);
 const BACKEND_URL = "http://localhost:1337";
+const API_KEY = "AIzaSyCRnfUWfANw0glEAZwOq4vauiP5iZLAXa0";
 
 /**
  * Common database helper functions.
@@ -425,5 +426,15 @@ export default new class DBHelper {
       map: map,
       animation: window.google.maps.Animation.DROP
     });
+  }
+
+  /**
+   * Lazy load Google Maps
+   */
+  lazyLoadGoogleMaps() {
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&callback=initMap`;
+    script.defer = true;
+    document.body.append(script);
   }
 }();

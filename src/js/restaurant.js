@@ -9,10 +9,16 @@ if ("serviceWorker" in navigator) {
 
 const current = { restaurant: null };
 
-/**
- * Initialize Google map, called from HTML.
- */
-window.initMap = () => {
+document.addEventListener("DOMContentLoaded", () => {
+  fetchRestaurantFromURL().then(restaurant => {
+    fillBreadcrumb(restaurant);
+    const showMap = document.querySelector(".js-show-map");
+    showMap.addEventListener("click", () => {
+      showMap.style = "display: none";
+      DBHelper.lazyLoadGoogleMaps();
+    });
+  });
+
   const offline = document.querySelector(".js-offline");
   window.setInterval(() => {
     if (window.navigator.onLine) {
@@ -22,17 +28,19 @@ window.initMap = () => {
       offline.style = "";
     }
   }, 1000);
+});
 
-  fetchRestaurantFromURL().then(restaurant => {
-    const map = new window.google.maps.Map(document.querySelector(".js-map"), {
-      zoom: 16,
-      center: restaurant.latlng,
-      scrollwheel: false
-    });
-    document.querySelector(".js-map-static").style = "display: none";
-    fillBreadcrumb(restaurant);
-    DBHelper.mapMarkerForRestaurant(restaurant, map);
+/**
+ * Initialize Google map, called from HTML.
+ */
+window.initMap = () => {
+  const map = new window.google.maps.Map(document.querySelector(".js-map"), {
+    zoom: 16,
+    center: current.restaurant.latlng,
+    scrollwheel: false
   });
+  document.querySelector(".js-map-static").style = "display: none";
+  DBHelper.mapMarkerForRestaurant(current.restaurant, map);
 };
 
 /**

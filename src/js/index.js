@@ -15,6 +15,7 @@ const current = { map: null, markers: [] };
 document.addEventListener("DOMContentLoaded", () => {
   fetchNeighborhoods();
   fetchCuisines();
+  updateRestaurants();
 
   const offline = document.querySelector(".js-offline");
   window.setInterval(() => {
@@ -25,6 +26,12 @@ document.addEventListener("DOMContentLoaded", () => {
       offline.style = "";
     }
   }, 1000);
+
+  const showMap = document.querySelector(".js-show-map");
+  showMap.addEventListener("click", () => {
+    showMap.style = "display: none";
+    DBHelper.lazyLoadGoogleMaps();
+  });
 });
 
 /**
@@ -155,6 +162,10 @@ function createRestaurantHTML(restaurant) {
  * @param {Object[]} restaurants Selected restaurants.
  */
 function addMarkersToMap(restaurants) {
+  if (!current.map) {
+    return;
+  }
+
   restaurants.forEach(restaurant => {
     // Add marker to the map
     const marker = DBHelper.mapMarkerForRestaurant(restaurant, current.map);
