@@ -77,7 +77,12 @@ module.exports = {
       template: "src/html/common.html",
       inject: false,
       chunks: ["index"],
-      apiKey: API_KEY
+      apiKey: API_KEY,
+      minify: {
+        collapseBooleanAttributes: true,
+        collapseInlineTagWhitespace: true,
+        collapseWhitespace: true
+      }
     }),
     new HtmlWebpackPlugin({
       title: "Restaurant Info",
@@ -86,7 +91,12 @@ module.exports = {
       inject: false,
       chunks: ["restaurant"],
       apiKey: API_KEY,
-      restaurantPage: true
+      restaurantPage: true,
+      minify: {
+        collapseBooleanAttributes: true,
+        collapseInlineTagWhitespace: true,
+        collapseWhitespace: true
+      }
     }),
     new ServiceWorkerWebpackPlugin({
       entry: path.join(__dirname, "src/js/sw.js")
