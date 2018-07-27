@@ -1,6 +1,7 @@
 import DBHelper from "../js/dbhelper";
 import "../css/all.css";
 import runtime from "serviceworker-webpack-plugin/lib/runtime";
+import LazyLoad from "vanilla-lazyload";
 
 if ("serviceWorker" in navigator) {
   runtime.register();
@@ -53,6 +54,7 @@ function fetchRestaurantFromURL() {
 
   return DBHelper.fetchRestaurantById(id).then(restaurant => {
     fillRestaurantHTML(restaurant);
+    new LazyLoad({ elements_selector: ".js-lazy" });
     current.restaurant = restaurant;
     return restaurant;
   });
@@ -124,8 +126,8 @@ function fillRestaurantHTML(restaurant) {
 
   const image = container.querySelector(".js-restaurant-image");
   const imageRequest = DBHelper.imageRequestForRestaurant(restaurant);
-  image.src = imageRequest.images[imageRequest.images.length - 1].path;
-  image.srcset = imageRequest.srcSet;
+  image.dataset.src = imageRequest.images[imageRequest.images.length - 1].path;
+  image.dataset.srcset = imageRequest.srcSet;
   image.alt = `Image of the restaurant ${restaurant.name}`;
 
   const cuisine = container.querySelector(".js-restaurant-cuisine");
