@@ -7,8 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title><%= title %></title>
     <link rel="manifest" href="/manifest.json">
-    <link rel="stylesheet" href="<%= css %>">
-    <script defer src="<%= js %>" type="module"></script>
   </head>
   <body>
     <header>
@@ -99,6 +97,7 @@
       <span class="footer__item">Copyright (c) 2018</span>
       <span class="footer__item">All Rights Reserved.</span>
     </footer>
+
 
     <script src="<%= `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap` %>"
             defer>

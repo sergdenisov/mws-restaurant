@@ -8,6 +8,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const HtmlWebpackInlineSourcePlugin = require("html-webpack-inline-source-plugin");
 
 const API_KEY = "AIzaSyCRnfUWfANw0glEAZwOq4vauiP5iZLAXa0";
 
@@ -75,20 +76,21 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: "Restaurant Reviews",
       template: "src/html/common.html",
-      inject: false,
+      inject: "body",
       chunks: ["index"],
       apiKey: API_KEY,
       minify: {
         collapseBooleanAttributes: true,
         collapseInlineTagWhitespace: true,
         collapseWhitespace: true
-      }
+      },
+      inlineSource: ".(js|css)$"
     }),
     new HtmlWebpackPlugin({
       title: "Restaurant Info",
       filename: "restaurant.html",
       template: "src/html/common.html",
-      inject: false,
+      inject: "body",
       chunks: ["restaurant"],
       apiKey: API_KEY,
       restaurantPage: true,
@@ -96,8 +98,10 @@ module.exports = {
         collapseBooleanAttributes: true,
         collapseInlineTagWhitespace: true,
         collapseWhitespace: true
-      }
+      },
+      inlineSource: ".(js|css)$"
     }),
+    new HtmlWebpackInlineSourcePlugin(),
     new ServiceWorkerWebpackPlugin({
       entry: path.join(__dirname, "src/js/sw.js")
     }),
