@@ -1,6 +1,6 @@
 # Udacity's Mobile Web Specialist Nanodegree Project: <br> Restaurant Reviews App
 
-The first stage of the project for [Udacity's Mobile Web Specialist Nanodegree](https://www.udacity.com/course/mobile-web-specialist-nanodegree--nd024): **Restaurant Reviews App**.
+The third stage of the project for [Udacity's Mobile Web Specialist Nanodegree](https://www.udacity.com/course/mobile-web-specialist-nanodegree--nd024): **Restaurant Reviews App**.
 
 ## How to start
 
