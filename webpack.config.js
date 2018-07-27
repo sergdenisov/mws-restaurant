@@ -5,11 +5,12 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 const ServiceWorkerWebpackPlugin = require("serviceworker-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const CompressionPlugin = require("compression-webpack-plugin");
 
 const API_KEY = "AIzaSyCRnfUWfANw0glEAZwOq4vauiP5iZLAXa0";
 
 module.exports = {
-  mode: "development",
+  mode: "production",
   entry: {
     index: "./src/js/index.js",
     restaurant: "./src/js/restaurant.js"
@@ -88,9 +89,10 @@ module.exports = {
     new ServiceWorkerWebpackPlugin({
       entry: path.join(__dirname, "src/js/sw.js")
     }),
-    new CopyWebpackPlugin([{ from: "src/manifest.json" }])
+    new CopyWebpackPlugin([{ from: "src/manifest.json" }]),
+    new CompressionPlugin({ include: [/.html/, /.js$/, /.css/] })
   ],
-  devtool: "inline-source-map",
+  devtool: "source-map",
   devServer: {
     contentBase: "./dist"
   }
