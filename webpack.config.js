@@ -6,6 +6,7 @@ const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 const ServiceWorkerWebpackPlugin = require("serviceworker-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 
 const API_KEY = "AIzaSyCRnfUWfANw0glEAZwOq4vauiP5iZLAXa0";
 
@@ -90,7 +91,8 @@ module.exports = {
       entry: path.join(__dirname, "src/js/sw.js")
     }),
     new CopyWebpackPlugin([{ from: "src/manifest.json" }]),
-    new CompressionPlugin({ include: [/.html/, /.js$/, /.css/] })
+    new CompressionPlugin({ include: [/.html/, /.js$/, /.css/] }),
+    new UglifyJSPlugin({ sourceMap: true })
   ],
   devtool: "source-map",
   devServer: {
